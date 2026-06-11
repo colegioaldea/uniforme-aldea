@@ -309,144 +309,105 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ─── BASE DE DATOS ───────────────────────────────────────────────
+// ─── SUPABASE ────────────────────────────────────────────────────
+const SUPA_URL = 'https://ekzfzfpywpiuqyoxwfkp.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVremZ6ZnB5d3BpdXF5b3h3ZmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExOTUyMTgsImV4cCI6MjA5Njc3MTIxOH0.f3wUbLAsYA5sHG-G3KZ77E4GggpFGm1gaVYNatcWS0o';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
 const DB = {
-  nextId: 200,
+  nextId: 1,
   anioActual: '2026',
   historial: [],
-  pvSlots: 3,  // current max PV columns (3 = PV1,PV2,PV3)
-  pcSlots: 3,  // current max PC columns (3 = PC1,PC2,PC3)
-  productos: [
-    {id:1,codigo:'SPT0',descripcion:'Short Pollera Tamaño 0',categoria:'Short Pollera',talle:'0',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:2,codigo:'SPT2',descripcion:'Short Pollera Tamaño 2',categoria:'Short Pollera',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:8,entradas:0,salidas:0,stock:8},
-    {id:3,codigo:'SPT4',descripcion:'Short Pollera Tamaño 4',categoria:'Short Pollera',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:9,entradas:0,salidas:0,stock:9},
-    {id:4,codigo:'SPT6',descripcion:'Short Pollera Tamaño 6',categoria:'Short Pollera',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:5,codigo:'SPT8',descripcion:'Short Pollera Tamaño 8',categoria:'Short Pollera',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:6,codigo:'JT2',descripcion:'Jardinera Tamaño 2',categoria:'Jardinera',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:7,codigo:'ST0',descripcion:'Short Tamaño 0',categoria:'Short',talle:'0',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:8,codigo:'ST2',descripcion:'Short Tamaño 2',categoria:'Short',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:9,codigo:'ST4',descripcion:'Short Tamaño 4',categoria:'Short',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:8,entradas:0,salidas:0,stock:8},
-    {id:10,codigo:'ST6',descripcion:'Short Tamaño 6',categoria:'Short',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:10,entradas:0,salidas:0,stock:10},
-    {id:11,codigo:'ST8',descripcion:'Short Tamaño 8',categoria:'Short',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:12,codigo:'ST10',descripcion:'Short Tamaño 10',categoria:'Short',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:13,codigo:'ST12',descripcion:'Short Tamaño 12',categoria:'Short',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:0,salidas:0,stock:4},
-    {id:14,codigo:'CT0',descripcion:'Calza Tamaño 0',categoria:'Calza',talle:'0',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:0,salidas:0,stock:4},
-    {id:15,codigo:'CT2',descripcion:'Calza Tamaño 2',categoria:'Calza',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:0,salidas:0,stock:4},
-    {id:16,codigo:'CT4',descripcion:'Calza Tamaño 4',categoria:'Calza',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:17,codigo:'CT6',descripcion:'Calza Tamaño 6',categoria:'Calza',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:7,entradas:0,salidas:0,stock:7},
-    {id:18,codigo:'CT8',descripcion:'Calza Tamaño 8',categoria:'Calza',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:19,codigo:'CT10',descripcion:'Calza Tamaño 10',categoria:'Calza',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:20,codigo:'CT12',descripcion:'Calza Tamaño 12',categoria:'Calza',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:21,codigo:'CT14',descripcion:'Calza Tamaño 14',categoria:'Calza',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:22,codigo:'CT16',descripcion:'Calza Tamaño 16',categoria:'Calza',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:23,codigo:'CTP',descripcion:'Calza Tamaño P',categoria:'Calza',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:24,codigo:'CTM',descripcion:'Calza Tamaño M',categoria:'Calza',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:25,codigo:'CTG',descripcion:'Calza Tamaño G',categoria:'Calza',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:26,codigo:'MLNI0',descripcion:'Remeras Mangas Largas N.I. Tamaño 0',categoria:'Remeras ML N.I.',talle:'0',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:27,codigo:'MLNI2',descripcion:'Remeras Mangas Largas N.I. Tamaño 2',categoria:'Remeras ML N.I.',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:8,entradas:0,salidas:0,stock:8},
-    {id:28,codigo:'MLNI4',descripcion:'Remeras Mangas Largas N.I. Tamaño 4',categoria:'Remeras ML N.I.',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:13,entradas:0,salidas:0,stock:13},
-    {id:29,codigo:'MLNI6',descripcion:'Remeras Mangas Largas N.I. Tamaño 6',categoria:'Remeras ML N.I.',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:8,entradas:0,salidas:0,stock:8},
-    {id:30,codigo:'MLNI8',descripcion:'Remeras Mangas Largas N.I. Tamaño 8',categoria:'Remeras ML N.I.',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:31,codigo:'MLEB6',descripcion:'Remeras Mangas Largas E.E.B. Tamaño 6',categoria:'Remeras ML E.E.B.',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:32,codigo:'MLEB8',descripcion:'Remeras Mangas Largas E.E.B. Tamaño 8',categoria:'Remeras ML E.E.B.',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:0,salidas:0,stock:4},
-    {id:33,codigo:'MLEB10',descripcion:'Remeras Mangas Largas E.E.B. Tamaño 10',categoria:'Remeras ML E.E.B.',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:34,codigo:'MLEB12',descripcion:'Remeras Mangas Largas E.E.B. Tamaño 12',categoria:'Remeras ML E.E.B.',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:35,codigo:'MLEB14',descripcion:'Remeras Mangas Largas E.E.B. Tamaño 14',categoria:'Remeras ML E.E.B.',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:36,codigo:'MLEB16',descripcion:'Remeras Mangas Largas E.E.B. Tamaño 16',categoria:'Remeras ML E.E.B.',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:37,codigo:'MLEBP',descripcion:'Remeras Mangas Largas E.E.B. Tamaño P',categoria:'Remeras ML E.E.B.',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:38,codigo:'MLEBM',descripcion:'Remeras Mangas Largas E.E.B. Tamaño M',categoria:'Remeras ML E.E.B.',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:39,codigo:'MCNI0',descripcion:'Remeras Mangas Cortas N.I. Tamaño 0',categoria:'Remeras MC N.I.',talle:'0',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:40,codigo:'MCNI2',descripcion:'Remeras Mangas Cortas N.I. Tamaño 2',categoria:'Remeras MC N.I.',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:7,entradas:0,salidas:0,stock:7},
-    {id:41,codigo:'MCNI4',descripcion:'Remeras Mangas Cortas N.I. Tamaño 4',categoria:'Remeras MC N.I.',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:42,codigo:'MCNI6',descripcion:'Remeras Mangas Cortas N.I. Tamaño 6',categoria:'Remeras MC N.I.',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:9,entradas:0,salidas:0,stock:9},
-    {id:43,codigo:'MCNI8',descripcion:'Remeras Mangas Cortas N.I. Tamaño 8',categoria:'Remeras MC N.I.',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:17,entradas:0,salidas:0,stock:17},
-    {id:44,codigo:'MCEB6',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño 6',categoria:'Remeras MC E.E.B.',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:8,entradas:0,salidas:0,stock:8},
-    {id:45,codigo:'MCEB8',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño 8',categoria:'Remeras MC E.E.B.',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:46,codigo:'MCEB10',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño 10',categoria:'Remeras MC E.E.B.',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:20,entradas:0,salidas:0,stock:20},
-    {id:47,codigo:'MCEB12',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño 12',categoria:'Remeras MC E.E.B.',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:9,entradas:0,salidas:0,stock:9},
-    {id:48,codigo:'MCEB14',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño 14',categoria:'Remeras MC E.E.B.',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:49,codigo:'MCEB16',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño 16',categoria:'Remeras MC E.E.B.',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:16,entradas:0,salidas:0,stock:16},
-    {id:50,codigo:'MCEBP',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño P',categoria:'Remeras MC E.E.B.',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:9,entradas:0,salidas:0,stock:9},
-    {id:51,codigo:'MCEBM',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño M',categoria:'Remeras MC E.E.B.',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:10,entradas:0,salidas:0,stock:10},
-    {id:52,codigo:'MCEBG',descripcion:'Remeras Mangas Cortas E.E.B. Tamaño G',categoria:'Remeras MC E.E.B.',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:7,entradas:0,salidas:0,stock:7},
-    {id:53,codigo:'PT6',descripcion:'Pollera Tamaño 6',categoria:'Pollera',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:54,codigo:'PT8',descripcion:'Pollera Tamaño 8',categoria:'Pollera',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:9,entradas:0,salidas:0,stock:9},
-    {id:55,codigo:'PT10',descripcion:'Pollera Tamaño 10',categoria:'Pollera',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:0,salidas:0,stock:4},
-    {id:56,codigo:'PT12',descripcion:'Pollera Tamaño 12',categoria:'Pollera',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:57,codigo:'PT14',descripcion:'Pollera Tamaño 14',categoria:'Pollera',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:58,codigo:'PT16',descripcion:'Pollera Tamaño 16',categoria:'Pollera',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:59,codigo:'PTE',descripcion:'Pollera Tamaño Especial',categoria:'Pollera',talle:'Esp.',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:10,entradas:0,salidas:0,stock:10},
-    {id:60,codigo:'C1',descripcion:'Corbata 1 (36 cm)',categoria:'Corbata',talle:'36cm',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:61,codigo:'C2',descripcion:'Corbata 2 (40 cm)',categoria:'Corbata',talle:'40cm',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:62,codigo:'C3',descripcion:'Corbata 3 (43 cm)',categoria:'Corbata',talle:'43cm',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:63,codigo:'C4',descripcion:'Corbata 4 (32 cm)',categoria:'Corbata',talle:'32cm',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:23,entradas:0,salidas:0,stock:23},
-    {id:64,codigo:'C5',descripcion:'Corbata varios tamaños',categoria:'Corbata',talle:'varios',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:42,entradas:0,salidas:0,stock:42},
-    {id:65,codigo:'BTPP',descripcion:'Buzo conjunto tamaño PP',categoria:'Buzo conjunto',talle:'PP',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:10,salidas:0,stock:10},
-    {id:66,codigo:'BT2',descripcion:'Buzo conjunto tamaño 2',categoria:'Buzo conjunto',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:10,entradas:5,salidas:0,stock:15},
-    {id:67,codigo:'BT4',descripcion:'Buzo conjunto tamaño 4',categoria:'Buzo conjunto',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:5,salidas:0,stock:9},
-    {id:68,codigo:'BT6',descripcion:'Buzo conjunto tamaño 6',categoria:'Buzo conjunto',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:10,salidas:0,stock:10},
-    {id:69,codigo:'BT8',descripcion:'Buzo conjunto tamaño 8',categoria:'Buzo conjunto',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:4,salidas:0,stock:4},
-    {id:70,codigo:'BT10',descripcion:'Buzo conjunto tamaño 10',categoria:'Buzo conjunto',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:3,salidas:0,stock:8},
-    {id:71,codigo:'BT12',descripcion:'Buzo conjunto tamaño 12',categoria:'Buzo conjunto',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:72,codigo:'BT14',descripcion:'Buzo conjunto tamaño 14',categoria:'Buzo conjunto',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:3,salidas:0,stock:8},
-    {id:73,codigo:'BT16',descripcion:'Buzo conjunto tamaño 16',categoria:'Buzo conjunto',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:3,salidas:0,stock:4},
-    {id:74,codigo:'BTP',descripcion:'Buzo conjunto tamaño P',categoria:'Buzo conjunto',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:4,entradas:2,salidas:0,stock:6},
-    {id:75,codigo:'BTM',descripcion:'Buzo conjunto tamaño M',categoria:'Buzo conjunto',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:2,salidas:0,stock:2},
-    {id:76,codigo:'BTG',descripcion:'Buzo conjunto tamaño G',categoria:'Buzo conjunto',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:2,salidas:0,stock:3},
-    {id:77,codigo:'BTGG',descripcion:'Buzo conjunto tamaño GG',categoria:'Buzo conjunto',talle:'GG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:2,salidas:0,stock:2},
-    {id:78,codigo:'PVT6',descripcion:'Pantalón de vestir tamaño 6',categoria:'Pantalón de vestir',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:79,codigo:'PVT8',descripcion:'Pantalón de vestir tamaño 8',categoria:'Pantalón de vestir',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:80,codigo:'PVT10',descripcion:'Pantalón de vestir tamaño 10',categoria:'Pantalón de vestir',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:81,codigo:'PVT12',descripcion:'Pantalón de vestir tamaño 12',categoria:'Pantalón de vestir',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:82,codigo:'PVT14',descripcion:'Pantalón de vestir tamaño 14',categoria:'Pantalón de vestir',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:83,codigo:'PVT16',descripcion:'Pantalón de vestir tamaño 16',categoria:'Pantalón de vestir',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:84,codigo:'PVTE',descripcion:'Pantalón de vestir talle especial',categoria:'Pantalón de vestir',talle:'Esp.',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:85,codigo:'CMTPP',descripcion:'Conjunto Moletón Tamaño PP',categoria:'Conjunto Moletón',talle:'PP',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:86,codigo:'CMT2',descripcion:'Conjunto Moletón Tamaño 2',categoria:'Conjunto Moletón',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:87,codigo:'CMT4',descripcion:'Conjunto Moletón Tamaño 4',categoria:'Conjunto Moletón',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:88,codigo:'CMT6',descripcion:'Conjunto Moletón Tamaño 6',categoria:'Conjunto Moletón',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:6,entradas:0,salidas:0,stock:6},
-    {id:89,codigo:'CMT8',descripcion:'Conjunto Moletón Tamaño 8',categoria:'Conjunto Moletón',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:90,codigo:'CMT10',descripcion:'Conjunto Moletón Tamaño 10',categoria:'Conjunto Moletón',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:5,entradas:0,salidas:0,stock:5},
-    {id:91,codigo:'CMT12',descripcion:'Conjunto Moletón Tamaño 12',categoria:'Conjunto Moletón',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:92,codigo:'CMT14',descripcion:'Conjunto Moletón Tamaño 14',categoria:'Conjunto Moletón',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:93,codigo:'CMT16',descripcion:'Conjunto Moletón Tamaño 16',categoria:'Conjunto Moletón',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:94,codigo:'CMTP',descripcion:'Conjunto Moletón Tamaño P',categoria:'Conjunto Moletón',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:95,codigo:'CMTM',descripcion:'Conjunto Moletón Tamaño M',categoria:'Conjunto Moletón',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:96,codigo:'CMTG',descripcion:'Conjunto Moletón Tamaño G',categoria:'Conjunto Moletón',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:3,entradas:0,salidas:0,stock:3},
-    {id:97,codigo:'PBTPP',descripcion:'Pantalon Buzo tamaño PP',categoria:'Pantalon Buzo',talle:'PP',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:98,codigo:'PBT2',descripcion:'Pantalon Buzo tamaño 2',categoria:'Pantalon Buzo',talle:'2',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:99,codigo:'PBT4',descripcion:'Pantalon Buzo tamaño 4',categoria:'Pantalon Buzo',talle:'4',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:100,codigo:'PBT6',descripcion:'Pantalon Buzo tamaño 6',categoria:'Pantalon Buzo',talle:'6',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:2,salidas:0,stock:3},
-    {id:101,codigo:'PBT8',descripcion:'Pantalon Buzo tamaño 8',categoria:'Pantalon Buzo',talle:'8',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:3,salidas:0,stock:3},
-    {id:102,codigo:'PBT10',descripcion:'Pantalon Buzo tamaño 10',categoria:'Pantalon Buzo',talle:'10',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:2,salidas:0,stock:3},
-    {id:103,codigo:'PBT12',descripcion:'Pantalon Buzo tamaño 12',categoria:'Pantalon Buzo',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:104,codigo:'PBT14',descripcion:'Pantalon Buzo tamaño 14',categoria:'Pantalon Buzo',talle:'14',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:2,salidas:0,stock:3},
-    {id:105,codigo:'pbt16',descripcion:'Pantalón Buzo Tamaño 16',categoria:'Pantalon Buzo',talle:'16',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:2,salidas:0,stock:4},
-    {id:106,codigo:'PBTP',descripcion:'Pantalon Buzo tamaño P',categoria:'Pantalon Buzo',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:2,salidas:0,stock:2},
-    {id:107,codigo:'PBTM',descripcion:'Pantalon Buzo tamaño M',categoria:'Pantalon Buzo',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:2,salidas:0,stock:3},
-    {id:108,codigo:'PBTG',descripcion:'Pantalon Buzo tamaño G',categoria:'Pantalon Buzo',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:3,salidas:0,stock:4},
-    {id:109,codigo:'PBTGG',descripcion:'Pantalon Buzo tamaño GG',categoria:'Pantalon Buzo',talle:'GG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:2,salidas:0,stock:3},
-    {id:110,codigo:'cbt12',descripcion:'Campera Buzo Tamaño 12',categoria:'Campera Buzo',talle:'12',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:111,codigo:'CPTP',descripcion:'Calzas Profesoras Tamaño P',categoria:'Calzas Profesoras',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:112,codigo:'CPTM',descripcion:'Calzas Profesoras Tamaño M',categoria:'Calzas Profesoras',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:113,codigo:'CPTG',descripcion:'Calzas Profesoras Tamaño G',categoria:'Calzas Profesoras',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:114,codigo:'CPTGG',descripcion:'Calzas Profesoras Tamaño GG',categoria:'Calzas Profesoras',talle:'GG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:115,codigo:'RFP',descripcion:'Remeras Profesoras Tamaño P',categoria:'Remeras Profesoras',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:116,codigo:'RFM',descripcion:'Remeras Profesoras Tamaño M',categoria:'Remeras Profesoras',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:117,codigo:'RFG',descripcion:'Remeras Profesoras Tamaño G',categoria:'Remeras Profesoras',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:118,codigo:'RFGG',descripcion:'Remeras Profesoras Tamaño GG',categoria:'Remeras Profesoras',talle:'GG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-    {id:119,codigo:'RFEG',descripcion:'Remeras Profesoras Tamaño EG',categoria:'Remeras Profesoras',talle:'EG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:120,codigo:'RMP',descripcion:'Remeras Profesores Tamaño P',categoria:'Remeras Profesores',talle:'P',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:2,entradas:0,salidas:0,stock:2},
-    {id:121,codigo:'RMM',descripcion:'Remeras Profesores Tamaño M',categoria:'Remeras Profesores',talle:'M',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:122,codigo:'RMG',descripcion:'Remeras Profesores Tamaño G',categoria:'Remeras Profesores',talle:'G',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:123,codigo:'RMGG',descripcion:'Remeras Profesores Tamaño GG',categoria:'Remeras Profesores',talle:'GG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:1,entradas:0,salidas:0,stock:1},
-    {id:124,codigo:'RMEG',descripcion:'Remeras Profesores Tamaño EG',categoria:'Remeras Profesores',talle:'EG',pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:0,entradas:0,salidas:0,stock:0},
-  ],
+  pvSlots: 3,
+  pcSlots: 3,
+  productos: [],
   ventas: [],
   compras: [],
 };
+
+// ─── API HELPERS ─────────────────────────────────────────────────
+async function apiGet(table, filters={}) {
+  let q = supa.from(table).select('*');
+  Object.entries(filters).forEach(([k,v]) => q = q.eq(k, v));
+  const {data, error} = await q.order('id');
+  if(error) console.error('GET '+table, error);
+  return data || [];
+}
+
+async function apiInsert(table, row) {
+  const {data, error} = await supa.from(table).insert(row).select().single();
+  if(error) { console.error('INSERT '+table, error); return null; }
+  return data;
+}
+
+async function apiUpdate(table, id, row) {
+  const {error} = await supa.from(table).update(row).eq('id', id);
+  if(error) console.error('UPDATE '+table, error);
+}
+
+async function apiDelete(table, id) {
+  const {error} = await supa.from(table).delete().eq('id', id);
+  if(error) console.error('DELETE '+table, error);
+}
+
+async function apiUpsert(table, row) {
+  const {error} = await supa.from(table).upsert(row);
+  if(error) console.error('UPSERT '+table, error);
+}
+
+// Loading overlay
+function showLoading(msg='Cargando...') {
+  let el = document.getElementById('loading-overlay');
+  if(!el) {
+    el = document.createElement('div');
+    el.id = 'loading-overlay';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,.75);z-index:9999;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;gap:10px;backdrop-filter:blur(2px)';
+    el.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity=".25"/><path d="M12 2a10 10 0 0 1 10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".8s" repeatCount="indefinite"/></path></svg><span id="loading-msg">'+msg+'</span>';
+    document.body.appendChild(el);
+  }
+  document.getElementById('loading-msg').textContent = msg;
+  el.style.display = 'flex';
+}
+function hideLoading() {
+  const el = document.getElementById('loading-overlay');
+  if(el) el.style.display = 'none';
+}
+
+// ─── LOAD ALL DATA ───────────────────────────────────────────────
+async function loadAll() {
+  showLoading('Conectando con Supabase...');
+  try {
+    const [productos, ventas, compras, historial, config] = await Promise.all([
+      apiGet('productos'),
+      apiGet('ventas'),
+      apiGet('compras'),
+      apiGet('historial'),
+      supa.from('configuracion').select('*').eq('id',1).single(),
+    ]);
+    DB.productos = productos;
+    DB.ventas = ventas;
+    DB.compras = compras;
+    DB.historial = historial;
+    if(config.data) {
+      DB.anioActual = config.data.anio_actual;
+      DB.pvSlots = config.data.pv_slots;
+      DB.pcSlots = config.data.pc_slots;
+      document.getElementById('sidebar-anio').textContent = DB.anioActual;
+    }
+  } catch(e) {
+    console.error('loadAll error', e);
+    alert('Error conectando con Supabase. Verificá tu conexión.');
+  }
+  hideLoading();
+}
+
+async function saveConfig() {
+  await apiUpsert('configuracion', {id:1, anio_actual:DB.anioActual, pv_slots:DB.pvSlots, pc_slots:DB.pcSlots});
+}
 
 // ─── UTILIDADES ──────────────────────────────────────────────────
 function gs(n){if(n===null||n===undefined)return '—';return 'Gs. '+Math.round(n).toLocaleString('es-PY')}
@@ -612,23 +573,21 @@ function updateColumnsModal(){
 }
 
 
-function addSlotPair(){
-  DB.pcSlots++;
-  DB.pvSlots++;
-  buildInvHeader();
-  renderInventario();
+async function addSlotPair(){
+  DB.pcSlots++;DB.pvSlots++;
+  await saveConfig();
+  buildInvHeader();renderInventario();
 }
 
-function removeSlotPair(){
+async function removeSlotPair(){
   const maxSlots=Math.max(DB.pcSlots,DB.pvSlots);
   if(maxSlots<=1){alert('Debe quedar al menos un par PC/PV.');return;}
-  // Check if last slot has data in any product
   const hasData=DB.productos.some(p=>p['pc'+maxSlots]!=null||p['pv'+maxSlots]!=null);
   if(hasData&&!confirm(`El par PC${maxSlots}/PV${maxSlots} tiene datos cargados. ¿Eliminar de todas formas?`))return;
   if(DB.pcSlots>=maxSlots) DB.pcSlots--;
   if(DB.pvSlots>=maxSlots) DB.pvSlots--;
-  buildInvHeader();
-  renderInventario();
+  await saveConfig();
+  buildInvHeader();renderInventario();
 }
 
 function addPCSlot(){
@@ -832,7 +791,7 @@ function openAddModal(){
   };
 }
 
-function saveProducto(){
+async function saveProducto(){
   const cod=document.getElementById('f-cod').value.trim().toUpperCase();
   const desc=document.getElementById('f-desc').value.trim();
   if(!cod||!desc){alert('Código y descripción son obligatorios.');return;}
@@ -841,7 +800,11 @@ function saveProducto(){
   if(cat==='__nueva__')cat=document.getElementById('f-nueva-cat').value.trim();
   if(!cat){alert('Seleccione o ingrese una categoría.');return;}
   const stock=parseInt(document.getElementById('f-stock').value)||0;
-  DB.productos.push({id:DB.nextId++,codigo:cod,descripcion:desc,categoria:cat,talle:document.getElementById('f-talle').value.trim(),pv:null,pv1:parseFloat(document.getElementById('f-precio').value)||null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:stock,entradas:0,salidas:0,stock});
+  const row={codigo:cod,descripcion:desc,categoria:cat,talle:document.getElementById('f-talle').value.trim(),pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:stock,entradas:0,salidas:0,stock};
+  showLoading('Guardando...');
+  const saved=await apiInsert('productos',row);
+  if(saved){DB.productos.push(saved);}
+  hideLoading();
   closeModal();refreshAll();
 }
 
@@ -891,7 +854,7 @@ function editProducto(id){
   </div>`);
 }
 
-function updateProducto(id){
+async function updateProducto(id){
   const p=DB.productos.find(x=>x.id===id);
   p.descripcion=document.getElementById('e-desc').value.trim()||p.descripcion;
   p.pv=parseFloat(document.getElementById('e-pv').value)||null;
@@ -904,6 +867,9 @@ function updateProducto(id){
   p.cant_inicial=Math.max(0,parseInt(document.getElementById('e-ini').value)||0);
   p.entradas+=ent;p.salidas+=sal;
   p.stock=p.cant_inicial+p.entradas-p.salidas;
+  showLoading('Guardando...');
+  await apiUpdate('productos',id,{descripcion:p.descripcion,pv:p.pv,pv1:p.pv1,pv2:p.pv2,pv3:p.pv3,pc1:p.pc1,pc2:p.pc2,pc3:p.pc3,cant_inicial:p.cant_inicial,entradas:p.entradas,salidas:p.salidas,stock:p.stock});
+  hideLoading();
   closeModal();refreshAll();
 }
 
@@ -976,7 +942,7 @@ function selectPV(val, btn){
   btn.style.background='#185FA5';btn.style.color='#fff';
 }
 
-function saveVenta(){
+async function saveVenta(){
   const cod=document.getElementById('v-cod').value.trim().toUpperCase();
   const comprador=document.getElementById('v-comprador').value.trim();
   const cant=parseInt(document.getElementById('v-cant').value)||0;
@@ -985,8 +951,13 @@ function saveVenta(){
   if(p){
     if(p.stock<cant){if(!confirm(`Stock disponible: ${p.stock}. ¿Continuar de todos modos?`))return;}
     p.salidas+=cant;p.stock=p.cant_inicial+p.entradas-p.salidas;
-  }
-  DB.ventas.unshift({id:DB.nextId++,fecha:document.getElementById('v-fecha').value,codigo_producto:cod,descripcion:document.getElementById('v-desc').value||cod,cantidad:cant,precio:parseFloat(document.getElementById('v-precio').value)||null,comprador,comprobante:document.getElementById('v-comp').value});
+    showLoading('Guardando...');
+    await apiUpdate('productos',p.id,{salidas:p.salidas,stock:p.stock});
+  } else { showLoading('Guardando...'); }
+  const row={fecha:document.getElementById('v-fecha').value,codigo_producto:cod,descripcion:document.getElementById('v-desc').value||cod,cantidad:cant,precio:parseFloat(document.getElementById('v-precio').value)||null,comprador,comprobante:document.getElementById('v-comp').value};
+  const saved=await apiInsert('ventas',row);
+  if(saved) DB.ventas.unshift(saved);
+  hideLoading();
   closeModal();refreshAll();
 }
 
@@ -1141,68 +1112,69 @@ function previewNuevoAnio(){
   document.getElementById('btn-confirmar-anio').style.display='inline-flex';
 }
 
-function confirmarNuevoAnio(){
+async function confirmarNuevoAnio(){
   const nombre=document.getElementById('nuevo-anio-input').value.trim();
   if(!nombre){return;}
   if(!confirm(`¿Confirmar cierre del año ${DB.anioActual} y apertura del año ${nombre}?`))return;
-
-  // Archive ventas
-  DB.ventas.forEach(v=>DB.historial.push({...v,tipo:'venta',anio:DB.anioActual}));
-  // Archive compras
-  DB.compras.forEach(c=>DB.historial.push({...c,tipo:'compra',anio:DB.anioActual}));
-
-  // Reset ventas and compras
-  DB.ventas=[];
-  DB.compras=[];
-
+  showLoading('Archivando datos del año '+DB.anioActual+'...');
+  // Archive ventas and compras to historial
+  const histRows=[
+    ...DB.ventas.map(v=>({...v,id:undefined,tipo:'venta',anio:DB.anioActual})),
+    ...DB.compras.map(c=>({...c,id:undefined,tipo:'compra',anio:DB.anioActual}))
+  ];
+  if(histRows.length>0){
+    const {error:he}=await supa.from('historial').insert(histRows);
+    if(he) console.error('historial insert',he);
+  }
+  // Delete all ventas and compras
+  await supa.from('ventas').delete().neq('id',0);
+  await supa.from('compras').delete().neq('id',0);
+  DB.ventas=[];DB.compras=[];
   // Update each product
-  DB.productos.forEach(p=>{
-    // Last PV in cascade: pv3 → pv2 → pv1 → pv
+  for(const p of DB.productos){
     let ultimoPV=p.pv||null;
     for(let i=DB.pvSlots;i>=1;i--){if(p['pv'+i]!=null){ultimoPV=p['pv'+i];break;}}
     p.pv=ultimoPV;
     for(let i=1;i<=DB.pvSlots;i++) p['pv'+i]=null;
     for(let i=1;i<=DB.pcSlots;i++) p['pc'+i]=null;
-    p.cant_inicial=p.stock;
-    p.entradas=0;
-    p.salidas=0;
-    // stock stays the same (cant_inicial = stock)
-  });
-
-  // Update año
+    p.cant_inicial=p.stock;p.entradas=0;p.salidas=0;
+    await apiUpdate('productos',p.id,{pv:p.pv,pv1:null,pv2:null,pv3:null,pc1:null,pc2:null,pc3:null,cant_inicial:p.cant_inicial,entradas:0,salidas:0});
+  }
   DB.anioActual=nombre;
+  await saveConfig();
   document.getElementById('sidebar-anio').textContent=nombre;
-
-  // Reset form
   document.getElementById('nuevo-anio-input').value='';
   document.getElementById('anio-preview').style.display='none';
   document.getElementById('btn-confirmar-anio').style.display='none';
-
-  populateHistAnios();
-  refreshAll();
+  await loadAll();
+  hideLoading();
+  populateHistAnios();refreshAll();
   alert(`✓ Año ${nombre} iniciado correctamente.`);
-  showPage('dashboard', document.querySelector('.nav-item'));
+  showPage('dashboard',document.querySelector('.nav-item'));
 }
 
 // ─── ELIMINAR VENTA / COMPRA ─────────────────────────────────────
-function deleteVenta(id){
+async function deleteVenta(id){
   const v=DB.ventas.find(x=>x.id===id);
   if(!confirm(`¿Eliminar venta de "${v.comprador}" (${v.codigo_producto} × ${v.cantidad})?`))return;
-  // Revert stock
+  showLoading('Eliminando...');
   const p=DB.productos.find(x=>x.codigo.toUpperCase()===v.codigo_producto.toUpperCase());
-  if(p){p.salidas-=v.cantidad;p.stock=p.cant_inicial+p.entradas-p.salidas;}
+  if(p){p.salidas-=v.cantidad;p.stock=p.cant_inicial+p.entradas-p.salidas;await apiUpdate('productos',p.id,{salidas:p.salidas,stock:p.stock});}
+  await apiDelete('ventas',id);
   DB.ventas=DB.ventas.filter(x=>x.id!==id);
+  hideLoading();
   refreshAll();
 }
 
-function deleteCompra(id){
+async function deleteCompra(id){
   const c=DB.compras.find(x=>x.id===id);
   if(!confirm(`¿Eliminar compra de "${c.proveedor}" (${c.codigo_producto} × ${c.cantidad})?`))return;
-  // Revert stock
+  showLoading('Eliminando...');
   const p=DB.productos.find(x=>x.codigo.toUpperCase()===c.codigo_producto.toUpperCase());
-  if(p){p.entradas-=c.cantidad;p.stock=p.cant_inicial+p.entradas-p.salidas;}
+  if(p){p.entradas-=c.cantidad;p.stock=p.cant_inicial+p.entradas-p.salidas;await apiUpdate('productos',p.id,{entradas:p.entradas,stock:p.stock});}
+  await apiDelete('compras',id);
   DB.compras=DB.compras.filter(x=>x.id!==id);
-  refreshAll();
+  hideLoading();refreshAll();
 }
 
 // ─── EDITAR VENTA ────────────────────────────────────────────────
@@ -1229,19 +1201,17 @@ function editVenta(id){
   </div>`);
 }
 
-function saveEditVenta(id){
+async function saveEditVenta(id){
   const v=DB.ventas.find(x=>x.id===id);
   const cantAnterior=v.cantidad;
   const codAnterior=v.codigo_producto;
   const nuevaCant=parseInt(document.getElementById('ev-cant').value)||0;
   const nuevoCod=document.getElementById('ev-cod').value.trim().toUpperCase();
-  // Revert old stock impact
+  showLoading('Guardando...');
   const pAnterior=DB.productos.find(x=>x.codigo.toUpperCase()===codAnterior.toUpperCase());
-  if(pAnterior){pAnterior.salidas-=cantAnterior;pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;}
-  // Apply new stock impact
+  if(pAnterior){pAnterior.salidas-=cantAnterior;pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;await apiUpdate('productos',pAnterior.id,{salidas:pAnterior.salidas,stock:pAnterior.stock});}
   const pNuevo=DB.productos.find(x=>x.codigo.toUpperCase()===nuevoCod);
-  if(pNuevo){pNuevo.salidas+=nuevaCant;pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;}
-  // Save fields
+  if(pNuevo){pNuevo.salidas+=nuevaCant;pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;await apiUpdate('productos',pNuevo.id,{salidas:pNuevo.salidas,stock:pNuevo.stock});}
   v.fecha=document.getElementById('ev-fecha').value;
   v.comprobante=document.getElementById('ev-comp').value;
   v.codigo_producto=nuevoCod;
@@ -1249,6 +1219,8 @@ function saveEditVenta(id){
   v.cantidad=nuevaCant;
   v.precio=parseFloat(document.getElementById('ev-precio').value)||null;
   v.comprador=document.getElementById('ev-comprador').value;
+  await apiUpdate('ventas',id,{fecha:v.fecha,comprobante:v.comprobante,codigo_producto:v.codigo_producto,descripcion:v.descripcion,cantidad:v.cantidad,precio:v.precio,comprador:v.comprador});
+  hideLoading();
   closeModal();refreshAll();
 }
 
@@ -1276,55 +1248,40 @@ function editCompra(id){
   </div>`);
 }
 
-function saveEditCompra(id){
+async function saveEditCompra(id){
   const c=DB.compras.find(x=>x.id===id);
   const cantAnterior=c.cantidad;
   const codAnterior=c.codigo_producto;
   const nuevaCant=parseInt(document.getElementById('ec-cant').value)||0;
   const nuevoCod=document.getElementById('ec-cod').value.trim().toUpperCase();
   const nuevoPrecio=parseFloat(document.getElementById('ec-precio').value)||0;
-  // Revert old stock impact
+  showLoading('Guardando...');
   const pAnterior=DB.productos.find(x=>x.codigo.toUpperCase()===codAnterior.toUpperCase());
-  if(pAnterior){pAnterior.entradas-=cantAnterior;pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;}
-  // Apply new stock impact
+  if(pAnterior){pAnterior.entradas-=cantAnterior;pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;await apiUpdate('productos',pAnterior.id,{entradas:pAnterior.entradas,stock:pAnterior.stock});}
   const pNuevo=DB.productos.find(x=>x.codigo.toUpperCase()===nuevoCod);
   if(pNuevo){
-    pNuevo.entradas+=nuevaCant;
-    pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;
-    // Update PC cascade if price changed
-    if(nuevoPrecio>0){
-      let lastSlot=0;
-      for(let i=1;i<=DB.pcSlots;i++){if(pNuevo['pc'+i]!=null)lastSlot=i;}
-      if(lastSlot===0){pNuevo.pc1=nuevoPrecio;}
-      else if(nuevoPrecio!==pNuevo['pc'+lastSlot]){
-        const nextSlot=lastSlot+1;
-        if(nextSlot>DB.pcSlots){DB.pcSlots=nextSlot;buildInvHeader();}
-        pNuevo['pc'+nextSlot]=nuevoPrecio;
-      }
-    }
+    pNuevo.entradas+=nuevaCant;pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;
+    if(nuevoPrecio>0){let lastSlot=0;for(let i=1;i<=DB.pcSlots;i++){if(pNuevo['pc'+i]!=null)lastSlot=i;}if(lastSlot===0){pNuevo.pc1=nuevoPrecio;}else if(nuevoPrecio!==pNuevo['pc'+lastSlot]){const nextSlot=lastSlot+1;if(nextSlot>DB.pcSlots){DB.pcSlots=nextSlot;await saveConfig();buildInvHeader();}pNuevo['pc'+nextSlot]=nuevoPrecio;}}
+    await apiUpdate('productos',pNuevo.id,{entradas:pNuevo.entradas,stock:pNuevo.stock,pc1:pNuevo.pc1,pc2:pNuevo.pc2,pc3:pNuevo.pc3});
   }
-  // Save fields
-  c.fecha=document.getElementById('ec-fecha').value;
-  c.proveedor=document.getElementById('ec-prov').value;
-  c.codigo_producto=nuevoCod;
-  c.descripcion=document.getElementById('ec-desc').value;
-  c.cantidad=nuevaCant;
-  c.precio_compra=nuevoPrecio;
-  c.total=nuevoPrecio*nuevaCant;
-  c.factura=document.getElementById('ec-factura').value.trim();
-  closeModal();refreshAll();
+  c.fecha=document.getElementById('ec-fecha').value;c.proveedor=document.getElementById('ec-prov').value;c.codigo_producto=nuevoCod;c.descripcion=document.getElementById('ec-desc').value;c.cantidad=nuevaCant;c.precio_compra=nuevoPrecio;c.total=nuevoPrecio*nuevaCant;c.factura=document.getElementById('ec-factura').value.trim();
+  await apiUpdate('compras',id,{fecha:c.fecha,proveedor:c.proveedor,codigo_producto:c.codigo_producto,descripcion:c.descripcion,cantidad:c.cantidad,precio_compra:c.precio_compra,total:c.total,factura:c.factura});
+  hideLoading();closeModal();refreshAll();
 }
 
 // ─── ELIMINAR PRODUCTO ───────────────────────────────────────────
-function deleteProducto(id){
+async function deleteProducto(id){
   const p=DB.productos.find(x=>x.id===id);
   if(p.stock>0){
     if(!confirm(`"${p.descripcion}" tiene ${p.stock} unidades en stock.\n¿Eliminar de todas formas?`))return;
   } else {
     if(!confirm(`¿Eliminar "${p.descripcion}"?`))return;
   }
+  showLoading('Eliminando...');
+  await apiDelete('productos',id);
   DB.productos=DB.productos.filter(x=>x.id!==id);
   invFiltered=invFiltered.filter(x=>x.id!==id);
+  hideLoading();
   refreshAll();
 }
 
@@ -1338,12 +1295,15 @@ function refreshAll(){
 }
 
 // ─── INIT ────────────────────────────────────────────────────────
-invFiltered=[...DB.productos];venFiltered=[...DB.ventas];comFiltered=[...DB.compras];
 document.getElementById('hoy-label').textContent='Hoy: '+todayDisplay();
-populateCatFilter();calcMetrics();renderAlertas();
-renderInventario();renderVentas();renderCompras();renderReportes();
-populateHistAnios();filterHistorial();
-setTimeout(initCharts,200);
+// Load data from Supabase then init UI
+loadAll().then(()=>{
+  invFiltered=[...DB.productos];venFiltered=[...DB.ventas];comFiltered=[...DB.compras];
+  populateCatFilter();calcMetrics();renderAlertas();
+  renderInventario();renderVentas();renderCompras();renderReportes();
+  populateHistAnios();filterHistorial();
+  setTimeout(initCharts,200);
+});
 </script>
 </body>
 </html>
