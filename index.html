@@ -1341,142 +1341,122 @@ function safeDate(v){
 
 function parseImportFile(wb){
   const result={productos:[],ventas:[],compras:[]};
-  const sheetNames=wb.SheetNames;
 
-  // Process all sheets that match the known format
-  const validSheets=sheetNames.filter(n=>n.startsWith('Fecha')||n.toLowerCase().includes('fecha'));
+  // ── Helper: parse a sheet with known column layout ──────────────
+  function parseSheet(ws, layout){
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:false,cellDates:true});
+    // Find first data row (skip headers)
+    let startRow=layout.headerRow+1;
 
-  validSheets.forEach(sheetName=>{
-    const ws=wb.Sheets[sheetName];
-    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:false});
-
-    // Find header row (row with "Codigo de Productos" or similar)
-    let headerRow=-1;
-    for(let i=0;i<Math.min(10,rows.length);i++){
-      const r=rows[i];
-      if(r && r.some(c=>safeStr(c).toLowerCase().includes('codigo'))){
-        headerRow=i; break;
-      }
-    }
-    if(headerRow<0) return;
-
-    // Detect column positions from header
-    const hdr=rows[headerRow].map(c=>safeStr(c).toLowerCase());
-    const COL={
-      // Products
-      cod: hdr.findIndex(h=>h.includes('codigo de prod')||h==='codigo de productos'),
-      desc: hdr.findIndex(h=>h.includes('descripcion')||h.includes('descripción')),
-      pv1: hdr.findIndex(h=>h.includes('precio de venta 20262')||h.includes('precio de venta 2')),
-      pv:  hdr.findIndex(h=>(h.includes('precio de venta 2026')||h.includes('precio de venta'))&&!h.includes('2')),
-      ini: hdr.findIndex(h=>h.includes('cant. ini')||h.includes('cant inicial')),
-      ent: hdr.findIndex(h=>h.includes('entrada')),
-      sal: hdr.findIndex(h=>h.includes('salida')),
-      stk: hdr.findIndex(h=>h==='stock'),
-      // Ventas (offset ~10 cols)
-      vfecha: -1, vcod: -1, vdesc: -1, vcant: -1, vprecio: -1, vcomprador: -1, vcomp: -1,
-      // Compras (offset ~20 cols)
-      cfecha: -1, ccod: -1, cdesc: -1, ccant: -1, cprecio: -1, cproveedor: -1, cfactura: -1,
-    };
-
-    // Find ventas columns (look for "Fecha" after product cols)
-    for(let c=8;c<hdr.length;c++){
-      const h=hdr[c];
-      if(h==='fecha'&&COL.vfecha<0) COL.vfecha=c;
-      else if((h.includes('código del producto')||h.includes('codigo del producto'))&&COL.vcod<0) COL.vcod=c;
-      else if(h.includes('descripcion')&&c>8&&COL.vdesc<0) COL.vdesc=c;
-      else if(h==='cantidad'&&COL.vcant<0) COL.vcant=c;
-      else if(h.includes('precio de venta')&&c>8&&COL.vprecio<0) COL.vprecio=c;
-      else if(h.includes('comprador')) COL.vcomprador=c;
-      else if(h.includes('comprobante')) COL.vcomp=c;
-    }
-
-    // Find compras columns (look for second "Fecha" block)
-    let secondFecha=false;
-    for(let c=COL.vfecha+1;c<hdr.length;c++){
-      const h=hdr[c];
-      if(h.includes('fecha')&&!secondFecha){secondFecha=true;COL.cfecha=c;}
-      else if((h.includes('codigo del producto')||h.includes('código del producto'))&&COL.ccod<0&&c>COL.vcod) COL.ccod=c;
-      else if(h.includes('descripcion')&&c>COL.vdesc&&COL.cdesc<0) COL.cdesc=c;
-      else if(h==='cant.'&&COL.ccant<0) COL.ccant=c;
-      else if(h.includes('precio compra')) COL.cprecio=c;
-      else if(h.includes('proveedor')) COL.cproveedor=c;
-      else if(h.includes('factura')) COL.cfactura=c;
-    }
-
-    // Parse data rows
-    for(let i=headerRow+1;i<rows.length;i++){
+    for(let i=startRow;i<rows.length;i++){
       const r=rows[i];
       if(!r) continue;
 
-      // Product
-      const cod=safeStr(r[COL.cod]);
-      if(cod&&cod!==''&&!cod.toLowerCase().includes('codigo')){
-        const existing=result.productos.find(p=>p.codigo===cod.toUpperCase());
-        if(!existing){
-          result.productos.push({
-            codigo: cod.toUpperCase(),
-            descripcion: safeStr(r[COL.desc]),
-            categoria: safeStr(r[COL.desc]).replace(/\s*[Tt]ama[ñn]o\s*\S+\s*$/, '').trim()||safeStr(r[COL.desc]),
-            talle: (safeStr(r[COL.desc]).match(/[Tt]ama[ñn]o\s*(\S+)/)||[])[1]||'',
-            pv: safeFloat(r[COL.pv]),
-            pv1: safeFloat(r[COL.pv1]),
-            pv2: null, pv3: null,
-            pc1: null, pc2: null, pc3: null,
-            cant_inicial: safeInt(r[COL.ini]),
-            entradas: safeInt(r[COL.ent]),
-            salidas: safeInt(r[COL.sal]),
-            stock: safeInt(r[COL.stk]),
-          });
-        }
-      }
-
-      // Venta
-      if(COL.vfecha>=0){
-        const vfecha=safeDate(r[COL.vfecha]);
-        const vcod=safeStr(r[COL.vcod]);
-        const vcomprador=safeStr(r[COL.vcomprador]);
-        if(vfecha&&vcod&&vcomprador&&vcomprador!=='-'&&vcomprador.toLowerCase()!=='comprador'){
-          const vcant=safeInt(r[COL.vcant]);
-          const vprecio=safeFloat(r[COL.vprecio]);
-          if(vcant>0){
-            result.ventas.push({
-              fecha: vfecha,
-              codigo_producto: vcod.toUpperCase(),
-              descripcion: safeStr(r[COL.vdesc]),
-              cantidad: vcant,
-              precio: vprecio,
-              comprador: vcomprador,
-              comprobante: safeStr(r[COL.vcomp]),
+      // Products
+      if(layout.prod){
+        const cod=safeStr(r[layout.prod.cod]).toUpperCase();
+        if(cod&&!cod.includes('CODIGO')&&!cod.includes('COD')&&cod.length>0&&!result.productos.find(p=>p.codigo===cod)){
+          const desc=safeStr(r[layout.prod.desc]);
+          if(desc&&desc!=='-'){
+            result.productos.push({
+              codigo: cod,
+              descripcion: desc,
+              categoria: desc.replace(/\s*[Tt]ama[ñn]o\s*\S+\s*$/, '').trim()||desc,
+              talle: (desc.match(/[Tt]ama[ñn]o\s*(\S+)/)||[])[1]||'',
+              pv:  safeFloat(r[layout.prod.pv])  ||null,
+              pv1: safeFloat(r[layout.prod.pv1]) ||null,
+              pv2:null,pv3:null,pc1:null,pc2:null,pc3:null,
+              cant_inicial: safeInt(r[layout.prod.ini]),
+              entradas:     safeInt(r[layout.prod.ent]),
+              salidas:      safeInt(r[layout.prod.sal]),
+              stock:        safeInt(r[layout.prod.stk]),
             });
           }
         }
       }
 
-      // Compra
-      if(COL.cfecha>=0){
-        const cfecha=safeDate(r[COL.cfecha]);
-        const ccod=safeStr(r[COL.ccod]);
-        const ccant=safeInt(r[COL.ccant]);
-        if(cfecha&&ccod&&ccod!==''&&ccant>0){
-          const cprecio=safeFloat(r[COL.cprecio]);
+      // Ventas
+      if(layout.ven){
+        const L=layout.ven;
+        const fecha=safeDate(r[L.fecha]);
+        const cod=safeStr(r[L.cod]).toUpperCase();
+        const comprador=safeStr(r[L.comprador]);
+        const cant=safeInt(r[L.cant]);
+        if(fecha&&cod&&comprador&&!['','-','COMPRADOR','NAN'].includes(comprador.toUpperCase())&&cant>0){
+          result.ventas.push({
+            fecha, codigo_producto:cod,
+            descripcion: safeStr(r[L.desc]),
+            cantidad: cant,
+            precio: safeFloat(r[L.precio]),
+            comprador,
+            comprobante: safeStr(r[L.comp]),
+          });
+        }
+      }
+
+      // Compras
+      if(layout.com){
+        const L=layout.com;
+        const fecha=safeDate(r[L.fecha]);
+        const cod=safeStr(r[L.cod]).toUpperCase();
+        const cant=safeInt(r[L.cant]);
+        if(fecha&&cod&&cant>0){
+          const precio=safeFloat(r[L.precio]);
           result.compras.push({
-            fecha: cfecha,
-            codigo_producto: ccod.toUpperCase(),
-            descripcion: safeStr(r[COL.cdesc]),
-            cantidad: ccant,
-            precio_compra: cprecio,
-            total: cprecio?cprecio*ccant:null,
-            proveedor: safeStr(r[COL.cproveedor]),
-            factura: safeStr(r[COL.cfactura]),
+            fecha, codigo_producto:cod,
+            descripcion: safeStr(r[L.desc]),
+            cantidad: cant,
+            precio_compra: precio,
+            total: precio!=null?precio*cant:safeFloat(r[L.total]),
+            proveedor: safeStr(r[L.proveedor]),
+            factura: safeStr(r[L.factura]),
           });
         }
       }
     }
-  });
+  }
 
-  // Deduplicate compras and ventas
-  result.ventas=result.ventas.filter((v,i,a)=>a.findIndex(x=>x.fecha===v.fecha&&x.codigo_producto===v.codigo_producto&&x.comprador===v.comprador&&x.cantidad===v.cantidad)<i?false:true);
-  result.compras=result.compras.filter((c,i,a)=>a.findIndex(x=>x.fecha===c.fecha&&x.codigo_producto===c.codigo_producto&&x.cantidad===c.cantidad&&x.proveedor===c.proveedor)<i?false:true);
+  // ── Sheet: Fecha 150226 — productos + compras ───────────────────
+  if(wb.SheetNames.includes('Fecha 150226')){
+    parseSheet(wb.Sheets['Fecha 150226'],{
+      headerRow:5,
+      prod:{ cod:0,desc:1,pv:2,pv1:3,ini:4,ent:5,sal:6,stk:7 },
+      ven: null,
+      com: { fecha:20,cod:21,desc:22,cant:23,precio:24,total:25,proveedor:27,factura:19 },
+    });
+  }
+
+  // ── Sheet: Fecha 30.01.25 — productos + ventas + compras ────────
+  if(wb.SheetNames.includes('Fecha 30.01.25')){
+    parseSheet(wb.Sheets['Fecha 30.01.25'],{
+      headerRow:6,
+      prod:{ cod:0,desc:1,pv:2,pv1:null,ini:3,ent:4,sal:5,stk:6 },
+      ven: { fecha:8,cod:9,desc:10,cant:11,precio:12,comprador:13,comp:14 },
+      com: { fecha:17,cod:18,desc:19,cant:20,precio:21,total:22,proveedor:24,factura:16 },
+    });
+  }
+
+  // ── Any other Fecha* sheets — try to detect layout ─────────────
+  wb.SheetNames.filter(n=>n.startsWith('Fecha')&&n!=='Fecha 150226'&&n!=='Fecha 30.01.25').forEach(name=>{
+    const ws=wb.Sheets[name];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:false,cellDates:true});
+    let hdrRow=-1;
+    for(let i=0;i<Math.min(10,rows.length);i++){
+      if(rows[i]&&rows[i].some(c=>safeStr(c).toLowerCase().includes('codigo de prod'))){hdrRow=i;break;}
+    }
+    if(hdrRow<0) return;
+    const hdr=rows[hdrRow].map(c=>safeStr(c).toLowerCase());
+    const ci=hdr.findIndex(h=>h.includes('cant. ini'));
+    const pv=hdr.findIndex(h=>h.includes('precio de venta'));
+    const ven_f=hdr.findIndex((h,i)=>h==='fecha'&&i>7);
+    const com_f=hdr.findIndex((h,i)=>h.includes('fecha')&&i>ven_f+1);
+    parseSheet(ws,{
+      headerRow:hdrRow,
+      prod:{ cod:0,desc:1,pv,pv1:pv+1<ven_f?pv+1:null,ini:ci,ent:ci+1,sal:ci+2,stk:ci+3 },
+      ven: ven_f>=0?{ fecha:ven_f,cod:ven_f+1,desc:ven_f+2,cant:ven_f+3,precio:ven_f+4,comprador:ven_f+6,comp:ven_f+7 }:null,
+      com: com_f>=0?{ fecha:com_f,cod:com_f+1,desc:com_f+2,cant:com_f+3,precio:com_f+4,total:com_f+5,proveedor:com_f+7,factura:ven_f+6 }:null,
+    });
+  });
 
   return result;
 }
