@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Inventario Uniformes 2026</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
+<!-- Tabler icons replaced with inline SVG -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f0;color:#1a1a18;font-size:14px}
@@ -109,20 +109,20 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 <div class="app">
 <nav class="sidebar">
   <div class="sidebar-header">
-    <i class="ti ti-shirt"></i> Uniformes <span id="sidebar-anio">2026</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg> Uniformes <span id="sidebar-anio">2026</span>
   </div>
   <div class="nav-section">Principal</div>
-  <button class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
-  <button class="nav-item" onclick="showPage('inventario',this)"><i class="ti ti-package"></i> Inventario</button>
+  <button class="nav-item active" onclick="showPage('dashboard',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</button>
+  <button class="nav-item" onclick="showPage('inventario',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16.5 9.4 7.5 4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Inventario</button>
   <div class="nav-section">Movimientos</div>
-  <button class="nav-item" onclick="showPage('ventas',this)"><i class="ti ti-shopping-cart"></i> Ventas</button>
-  <button class="nav-item" onclick="showPage('compras',this)"><i class="ti ti-truck"></i> Compras</button>
+  <button class="nav-item" onclick="showPage('ventas',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Ventas</button>
+  <button class="nav-item" onclick="showPage('compras',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Compras</button>
   <div class="nav-section">Análisis</div>
-  <button class="nav-item" onclick="showPage('reportes',this)"><i class="ti ti-chart-bar"></i> Reportes</button>
+  <button class="nav-item" onclick="showPage('reportes',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Reportes</button>
   <div class="nav-section">Gestión</div>
-  <button class="nav-item" onclick="showPage('historial',this)"><i class="ti ti-archive"></i> Historial</button>
-  <button class="nav-item" onclick="showPage('anio',this)"><i class="ti ti-calendar-plus"></i> Nuevo año</button>
-  <button class="nav-item" onclick="showPage('importar',this)"><i class="ti ti-file-import"></i> Importar Excel</button>
+  <button class="nav-item" onclick="showPage('historial',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg> Historial</button>
+  <button class="nav-item" onclick="showPage('anio',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg> Nuevo año</button>
+  <button class="nav-item" onclick="showPage('importar',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="12"/><line x1="15" y1="15" x2="12" y2="12"/></svg> Importar Excel</button>
 </nav>
 
 <main class="main">
@@ -164,8 +164,8 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
   <div class="page-header">
     <div class="page-title">Inventario de productos</div>
     <div style="display:flex;gap:8px">
-      <button class="btn" onclick="openColumnsModal()" title="Configurar columnas"><i class="ti ti-columns"></i> Columnas</button>
-      <button class="btn primary" onclick="openAddModal()"><i class="ti ti-plus"></i> Agregar producto</button>
+      <button class="btn" onclick="openColumnsModal()" title="Configurar columnas"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 1 2 2h7m0-18v18"/></svg> Columnas</button>
+      <button class="btn primary" onclick="openAddModal()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar producto</button>
     </div>
   </div>
   <div class="toolbar">
@@ -193,7 +193,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 <div id="page-ventas" class="page">
   <div class="page-header">
     <div class="page-title">Registro de ventas</div>
-    <button class="btn primary" onclick="openVentaModal()"><i class="ti ti-plus"></i> Nueva venta</button>
+    <button class="btn primary" onclick="openVentaModal()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nueva venta</button>
   </div>
   <div class="toolbar">
     <input type="text" class="search-input" id="ven-search" placeholder="Buscar comprador, código…" oninput="filterVentas()">
@@ -213,7 +213,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 <div id="page-compras" class="page">
   <div class="page-header">
     <div class="page-title">Registro de compras</div>
-    <button class="btn primary" onclick="openCompraModal()"><i class="ti ti-plus"></i> Nueva compra</button>
+    <button class="btn primary" onclick="openCompraModal()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nueva compra</button>
   </div>
   <div class="toolbar">
     <input type="text" class="search-input" id="com-search" placeholder="Buscar proveedor, código…" oninput="filterCompras()">
@@ -257,7 +257,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div class="card-title" style="margin-bottom:0">Stock por categoría</div>
-      <button class="btn btn-sm" onclick="exportStockCatsExcel()"><i class="ti ti-file-spreadsheet"></i> Exportar Excel</button>
+      <button class="btn btn-sm" onclick="exportStockCatsExcel()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> Exportar Excel</button>
     </div>
     <div class="table-wrap" style="border-radius:8px;margin-top:0">
       <table id="tbl-rep-cats"><thead><tr><th>Código</th><th>Descripción / Categoría</th><th style="text-align:right">Unidades</th></tr></thead><tbody></tbody></table>
@@ -275,7 +275,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
       <option value="compras">Compras</option>
     </select>
     <span class="flex-1"></span>
-    <button class="btn" onclick="exportHistorialExcel()"><i class="ti ti-file-spreadsheet"></i> Exportar Excel</button>
+    <button class="btn" onclick="exportHistorialExcel()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> Exportar Excel</button>
   </div>
   <div class="table-wrap" id="hist-wrap">
     <table id="tbl-historial-ventas">
@@ -308,8 +308,8 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
     </div>
     <div id="anio-preview" style="display:none;background:#EBF2FB;border:1px solid #B5D4F4;border-radius:8px;padding:12px 16px;margin-top:16px;font-size:13px;color:#0C447C"></div>
     <div style="margin-top:20px;display:flex;gap:8px">
-      <button class="btn" onclick="previewNuevoAnio()"><i class="ti ti-eye"></i> Vista previa</button>
-      <button class="btn primary" id="btn-confirmar-anio" style="display:none" onclick="confirmarNuevoAnio()"><i class="ti ti-calendar-plus"></i> Confirmar y crear año</button>
+      <button class="btn" onclick="previewNuevoAnio()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Vista previa</button>
+      <button class="btn primary" id="btn-confirmar-anio" style="display:none" onclick="confirmarNuevoAnio()"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg> Confirmar y crear año</button>
     </div>
   </div>
 </div>
@@ -324,7 +324,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
       Las hojas <strong>Fecha 150226</strong> y <strong>Fecha 30.01.25</strong> serán procesadas automáticamente.
     </div>
     <div style="border:2px dashed #ddd;border-radius:10px;padding:32px;text-align:center;cursor:pointer;transition:border-color .2s" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.style.borderColor='#185FA5'" ondragleave="this.style.borderColor='#ddd'" ondrop="handleDrop(event)">
-      <i class="ti ti-file-import" style="font-size:36px;color:#185FA5;display:block;margin-bottom:10px"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="12"/><line x1="15" y1="15" x2="12" y2="12"/></svg>
       <div style="font-size:14px;color:#555">Arrastrá el archivo aquí o <span style="color:#185FA5;font-weight:500">hacé click para elegir</span></div>
       <div style="font-size:12px;color:#aaa;margin-top:6px">.xlsx o .xls</div>
     </div>
@@ -337,7 +337,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
       </div>
       <div style="display:flex;gap:8px;margin-top:16px">
         <button class="btn" onclick="resetImport()">Cancelar</button>
-        <button class="btn primary" id="btn-do-import" onclick="doImport()"><i class="ti ti-upload"></i> Importar datos</button>
+        <button class="btn primary" id="btn-do-import" onclick="doImport()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar datos</button>
       </div>
     </div>
     <div id="import-result" style="display:none;margin-top:16px"></div>
@@ -466,7 +466,7 @@ function stockChip(s){
 }
 function pdfIcon(url){
   if(!url)return '<span style="color:#ccc;font-size:12px">—</span>';
-  return `<a href="${url}" target="_blank" title="Ver documento" style="color:#2E7D32;display:inline-flex;align-items:center;gap:3px;font-size:12px;text-decoration:none;font-weight:500"><i class="ti ti-file-type-pdf" style="font-size:18px"></i></a>`;
+  return `<a href="${url}" target="_blank" title="Ver documento" style="color:#2E7D32;display:inline-flex;align-items:center;gap:3px;font-size:12px;text-decoration:none;font-weight:500"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg></a>`;
 }
 
 const PER=15;
@@ -586,8 +586,8 @@ function openColumnsModal(){
   <div class="modal-body">
     <p style="font-size:13px;color:#555;margin-bottom:20px">Pares actuales: <strong>${maxSlots}</strong> (PC1…PC${maxSlots} / PV1…PV${maxSlots})</p>
     <div style="display:flex;gap:12px">
-      <button class="btn primary" onclick="addSlotPair();updateColumnsModal()" style="flex:1;justify-content:center"><i class="ti ti-plus"></i> Agregar par PC/PV</button>
-      <button class="btn" onclick="removeSlotPair();updateColumnsModal()" style="flex:1;justify-content:center;color:#993C1D;border-color:#993C1D"><i class="ti ti-minus"></i> Eliminar último par</button>
+      <button class="btn primary" onclick="addSlotPair();updateColumnsModal()" style="flex:1;justify-content:center"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar par PC/PV</button>
+      <button class="btn" onclick="removeSlotPair();updateColumnsModal()" style="flex:1;justify-content:center;color:#993C1D;border-color:#993C1D"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg> Eliminar último par</button>
     </div>
   </div>
   <div class="modal-actions"><button class="btn primary" onclick="closeModal()">Listo</button></div>`);
@@ -632,12 +632,12 @@ function renderInventario(){
       cells+=`<td style="text-align:right;color:#993C1D">${p.salidas}</td>`;
       cells+=`<td style="text-align:center">${stockChip(p.stock)}</td>`;
       cells+=`<td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px">
-        <button class='btn-icon btn-edit' onclick='editProducto(${p.id})' title='Editar'><i class="ti ti-pencil"></i></button>
-        <button class='btn-icon btn-delete' onclick='deleteProducto(${p.id})' title='Eliminar'><i class="ti ti-trash"></i></button>
+        <button class='btn-icon btn-edit' onclick='editProducto(${p.id})' title='Editar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class='btn-icon btn-delete' onclick='deleteProducto(${p.id})' title='Eliminar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
       </td>`;
       return `<tr>${cells}</tr>`;
     }).join('')
-    :`<tr><td colspan="${totalCols}"><div class="empty-state"><i class="ti ti-search"></i>Sin resultados</div></td></tr>`;
+    :`<tr><td colspan="${totalCols}"><div class="empty-state"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Sin resultados</div></td></tr>`;
   renderPagination('inv-pagination',pages,invPage,n=>{invPage=n;renderInventario()});
 }
 
@@ -660,11 +660,11 @@ function renderVentas(){
       <td style="text-align:right;font-weight:600">${gs((v.precio||0)*v.cantidad)}</td>
       <td style="color:#888">${v.comprobante||'—'}</td>
       <td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px">
-        <button class='btn-icon btn-edit' onclick='editVenta(${v.id})' title='Editar'><i class="ti ti-pencil"></i></button>
-        <button class='btn-icon btn-delete' onclick='deleteVenta(${v.id})' title='Eliminar'><i class="ti ti-trash"></i></button>
+        <button class='btn-icon btn-edit' onclick='editVenta(${v.id})' title='Editar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class='btn-icon btn-delete' onclick='deleteVenta(${v.id})' title='Eliminar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
       </td>
     </tr>`).join('')
-    :'<tr><td colspan="9"><div class="empty-state"><i class="ti ti-shopping-cart"></i>Sin ventas registradas</div></td></tr>';
+    :'<tr><td colspan="9"><div class="empty-state"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Sin ventas registradas</div></td></tr>';
   renderPagination('ven-pagination',pages,venPage,n=>{venPage=n;renderVentas()});
 }
 
@@ -688,11 +688,11 @@ function renderCompras(){
       <td class="text-muted">${c.factura||'—'}</td>
       <td>${pdfIcon(c.documento_url)}</td>
       <td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px">
-        <button class='btn-icon btn-edit' onclick='editCompra(${c.id})' title='Editar'><i class="ti ti-pencil"></i></button>
-        <button class='btn-icon btn-delete' onclick='deleteCompra(${c.id})' title='Eliminar'><i class="ti ti-trash"></i></button>
+        <button class='btn-icon btn-edit' onclick='editCompra(${c.id})' title='Editar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class='btn-icon btn-delete' onclick='deleteCompra(${c.id})' title='Eliminar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
       </td>
     </tr>`).join('')
-    :'<tr><td colspan="10"><div class="empty-state"><i class="ti ti-truck"></i>Sin compras registradas</div></td></tr>';
+    :'<tr><td colspan="10"><div class="empty-state"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Sin compras registradas</div></td></tr>';
   renderPagination('com-pagination',pages,comPage,n=>{comPage=n;renderCompras()});
 }
 
@@ -774,7 +774,7 @@ function openAddModal(){
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveProducto()"><i class="ti ti-check"></i> Guardar</button>
+    <button class="btn primary" onclick="saveProducto()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Guardar</button>
   </div>`);
   document.getElementById('f-cat').onchange=function(){
     document.getElementById('f-nueva-cat-wrap').style.display=this.value==='__nueva__'?'block':'none';
@@ -809,7 +809,7 @@ function editProducto(id){
         <span class="prov">${c.proveedor}</span>
         <span class="monto">${gs(c.total)}</span>
         ${c.documento_url
-          ?`<a href="${c.documento_url}" target="_blank" style="color:#2E7D32;display:inline-flex;align-items:center;gap:3px;font-size:12px;text-decoration:none;font-weight:500"><i class="ti ti-file-type-pdf" style="font-size:16px"></i> Ver</a>`
+          ?`<a href="${c.documento_url}" target="_blank" style="color:#2E7D32;display:inline-flex;align-items:center;gap:3px;font-size:12px;text-decoration:none;font-weight:500"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg> Ver</a>`
           :`<span style="font-size:11px;color:#bbb">Sin doc.</span>`
         }
       </div>`).join('');
@@ -853,12 +853,12 @@ function editProducto(id){
       <div class="form-row"><label>Entradas a agregar</label><input id="e-ent" type="number" value="0" min="0"></div>
       <div class="form-row"><label>Salidas a agregar</label><input id="e-sal" type="number" value="0" min="0"></div>
     </div>
-    <div style="font-size:12px;font-weight:600;color:#555;margin:16px 0 8px;display:flex;align-items:center;gap:6px"><i class="ti ti-file-type-pdf" style="color:#2E7D32"></i> Compras y documentos</div>
+    <div style="font-size:12px;font-weight:600;color:#555;margin:16px 0 8px;display:flex;align-items:center;gap:6px"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg> Compras y documentos</div>
     <div class="compras-producto-list">${comprasHtml}</div>
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="updateProducto(${id})"><i class="ti ti-check"></i> Actualizar</button>
+    <button class="btn primary" onclick="updateProducto(${id})"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Actualizar</button>
   </div>`);
 }
 async function updateProducto(id){
@@ -902,7 +902,7 @@ function openVentaModal(){
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveVenta()"><i class="ti ti-check"></i> Registrar</button>
+    <button class="btn primary" onclick="saveVenta()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Registrar</button>
   </div>`);
 }
 function autoFillVenta(){
@@ -969,12 +969,12 @@ function openCompraModal(){
     <div class="form-row">
       <label>Documento (factura / pedido PDF)</label>
       <div class="pdf-upload-area" onclick="document.getElementById('c-pdf-input').click()">
-        <i class="ti ti-file-type-pdf"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg>
         <p>Click para adjuntar PDF</p>
       </div>
       <input type="file" id="c-pdf-input" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="previewPDF(this)">
       <div id="c-pdf-preview" style="display:none" class="pdf-preview">
-        <i class="ti ti-file-type-pdf"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg>
         <span id="c-pdf-name"></span>
         <button type="button" class="btn btn-sm danger" onclick="clearPDF()">Quitar</button>
       </div>
@@ -982,7 +982,7 @@ function openCompraModal(){
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveCompra()"><i class="ti ti-check"></i> Registrar</button>
+    <button class="btn primary" onclick="saveCompra()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Registrar</button>
   </div>`);
 }
 
@@ -1069,19 +1069,19 @@ function editCompra(id){
       <label>Documento adjunto</label>
       ${c.documento_url
         ?`<div class="pdf-preview" id="ec-pdf-current">
-            <i class="ti ti-file-type-pdf"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg>
             <span>Documento actual</span>
             <a href="${c.documento_url}" target="_blank">Ver</a>
             <button type="button" class="btn btn-sm danger" onclick="removeEditPDF(${id})">Eliminar</button>
           </div>`
         :`<div class="pdf-upload-area" id="ec-upload-area" onclick="document.getElementById('ec-pdf-input').click()">
-            <i class="ti ti-file-type-pdf"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg>
             <p>Click para adjuntar PDF</p>
           </div>`
       }
       <input type="file" id="ec-pdf-input" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="previewEditPDF(this)">
       <div id="ec-pdf-preview" style="display:none" class="pdf-preview">
-        <i class="ti ti-file-type-pdf"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="12" y1="10" x2="12" y2="10"/></svg>
         <span id="ec-pdf-name"></span>
         <button type="button" class="btn btn-sm danger" onclick="clearEditPDF()">Quitar</button>
       </div>
@@ -1089,7 +1089,7 @@ function editCompra(id){
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveEditCompra(${id})"><i class="ti ti-check"></i> Guardar</button>
+    <button class="btn primary" onclick="saveEditCompra(${id})"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Guardar</button>
   </div>`);
 }
 
@@ -1254,7 +1254,7 @@ function editVenta(id){
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveEditVenta(${id})"><i class="ti ti-check"></i> Guardar</button>
+    <button class="btn primary" onclick="saveEditVenta(${id})"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Guardar</button>
   </div>`);
 }
 async function saveEditVenta(id){
