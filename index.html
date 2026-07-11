@@ -45,6 +45,8 @@ input:focus,select:focus{border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,16
 .btn-edit:hover{background:#C8DCFA;color:#0C447C}
 .btn-delete{background:#FCEBEB;color:#993C1D}
 .btn-delete:hover{background:#F5C6C6;color:#791F1F}
+.btn-pdf{background:#E8F5E9;color:#2E7D32}
+.btn-pdf:hover{background:#C8E6C9;color:#1B5E20}
 .table-wrap{border-radius:10px;overflow:hidden;border:1px solid #e5e4e0}
 table{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
 th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:#888;background:#fafafa;border-bottom:1px solid #e5e4e0;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
@@ -85,6 +87,21 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 .alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px}
 .alert-info{background:#EBF2FB;color:#0C447C;border:1px solid #B5D4F4}
 .hint{font-size:11px;color:#aaa;margin-top:4px}
+/* PDF upload area */
+.pdf-upload-area{border:2px dashed #ddd;border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;margin-top:6px}
+.pdf-upload-area:hover{border-color:#185FA5}
+.pdf-upload-area i{font-size:28px;color:#185FA5;display:block;margin-bottom:6px}
+.pdf-upload-area p{font-size:12px;color:#888}
+.pdf-preview{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#E8F5E9;border:1px solid #a5d6a7;border-radius:8px;margin-top:8px}
+.pdf-preview i{font-size:20px;color:#2E7D32;flex-shrink:0}
+.pdf-preview span{font-size:12px;color:#1B5E20;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdf-preview a{font-size:12px;color:#185FA5;text-decoration:none;font-weight:500;flex-shrink:0}
+.pdf-preview a:hover{text-decoration:underline}
+.compras-producto-list{margin-top:8px}
+.compra-doc-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid #e5e4e0;margin-bottom:6px;background:#fafaf8;font-size:12px}
+.compra-doc-row .fecha{color:#888;white-space:nowrap}
+.compra-doc-row .prov{font-weight:500;flex:1}
+.compra-doc-row .monto{color:#0F6E56;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -165,7 +182,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
   </div>
   <div class="table-wrap">
     <table id="tbl-inventario">
-      <thead><tr><th>Código</th><th>Descripción</th><th>Categoría</th><th style="text-align:right">PV</th><th style="text-align:right">PC1</th><th style="text-align:right">PV1</th><th style="text-align:right">PC2</th><th style="text-align:right">PV2</th><th style="text-align:right">PC3</th><th style="text-align:right">PV3</th><th style="text-align:right">Ini.</th><th style="text-align:right">Ent.</th><th style="text-align:right">Sal.</th><th style="text-align:right">Stock</th><th></th></tr></thead>
+      <thead><tr id="inv-thead"></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -205,7 +222,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
   </div>
   <div class="table-wrap">
     <table id="tbl-compras">
-      <thead><tr><th>Fecha</th><th>Código</th><th>Descripción</th><th>Proveedor</th><th style="text-align:right">Cant.</th><th style="text-align:right">Precio compra</th><th style="text-align:right">Total</th><th>Factura N°</th><th></th></tr></thead>
+      <thead><tr><th>Fecha</th><th>Código</th><th>Descripción</th><th>Proveedor</th><th style="text-align:right">Cant.</th><th style="text-align:right">Precio compra</th><th style="text-align:right">Total</th><th>Factura N°</th><th>Doc.</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -240,7 +257,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div class="card-title" style="margin-bottom:0">Stock por categoría</div>
-      <button class="btn btn-sm" onclick="exportStockCatsExcel()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="18"/><line x1="15" y1="15" x2="12" y2="18"/></svg> Exportar Excel</button>
+      <button class="btn btn-sm" onclick="exportStockCatsExcel()"><i class="ti ti-file-spreadsheet"></i> Exportar Excel</button>
     </div>
     <div class="table-wrap" style="border-radius:8px;margin-top:0">
       <table id="tbl-rep-cats"><thead><tr><th>Código</th><th>Descripción / Categoría</th><th style="text-align:right">Unidades</th></tr></thead><tbody></tbody></table>
@@ -250,9 +267,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 
 <!-- HISTORIAL -->
 <div id="page-historial" class="page">
-  <div class="page-header">
-    <div class="page-title">Historial de años</div>
-  </div>
+  <div class="page-header"><div class="page-title">Historial de años</div></div>
   <div class="toolbar">
     <select id="hist-anio" onchange="filterHistorial()" style="width:120px"><option value="">Todos los años</option></select>
     <select id="hist-tipo" onchange="filterHistorial()" style="width:140px">
@@ -268,7 +283,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
       <tbody></tbody>
     </table>
     <table id="tbl-historial-compras" style="display:none">
-      <thead><tr><th>Año</th><th>Fecha</th><th>Código</th><th>Descripción</th><th>Proveedor</th><th style="text-align:right">Cant.</th><th style="text-align:right">Precio unit.</th><th style="text-align:right">Total</th><th>Factura N°</th></tr></thead>
+      <thead><tr><th>Año</th><th>Fecha</th><th>Código</th><th>Descripción</th><th>Proveedor</th><th style="text-align:right">Cant.</th><th style="text-align:right">Precio unit.</th><th style="text-align:right">Total</th><th>Factura N°</th><th>Doc.</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -276,16 +291,14 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 
 <!-- NUEVO AÑO -->
 <div id="page-anio" class="page">
-  <div class="page-header">
-    <div class="page-title">Crear nuevo año</div>
-  </div>
+  <div class="page-header"><div class="page-title">Crear nuevo año</div></div>
   <div class="card" style="max-width:520px">
     <div class="card-title">Cierre de año y apertura de nuevo período</div>
     <div style="font-size:13px;color:#555;line-height:1.7;margin-bottom:20px">
       Al crear un nuevo año:<br>
       • Las <strong>ventas y compras</strong> actuales se archivan en el historial<br>
       • El <strong>stock actual</strong> de cada producto pasa a ser el stock inicial del nuevo año<br>
-      • El <strong>PV</strong> de cada producto se actualiza con el último precio de venta registrado (PV3 → PV2 → PV1 → PV)<br>
+      • El <strong>PV</strong> de cada producto se actualiza con el último precio de venta registrado<br>
       • Los campos <strong>PC1…PV3</strong> se limpian para el nuevo período<br>
       • Las <strong>entradas y salidas</strong> se resetean a 0
     </div>
@@ -303,18 +316,15 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 
 <!-- IMPORTAR EXCEL -->
 <div id="page-importar" class="page">
-  <div class="page-header">
-    <div class="page-title">Importar desde Excel</div>
-  </div>
+  <div class="page-header"><div class="page-title">Importar desde Excel</div></div>
   <div class="card" style="max-width:600px">
     <div class="card-title">Seleccionar archivo</div>
     <div style="font-size:13px;color:#555;line-height:1.7;margin-bottom:16px">
       El archivo debe tener el mismo formato que el Excel original (<strong>Uniformes_2026_R0.xlsx</strong>).<br>
-      Las hojas <strong>Fecha 150226</strong> y <strong>Fecha 30.01.25</strong> serán procesadas automáticamente.<br>
-      Se importarán: productos, ventas y compras.
+      Las hojas <strong>Fecha 150226</strong> y <strong>Fecha 30.01.25</strong> serán procesadas automáticamente.
     </div>
     <div style="border:2px dashed #ddd;border-radius:10px;padding:32px;text-align:center;cursor:pointer;transition:border-color .2s" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.style.borderColor='#185FA5'" ondragleave="this.style.borderColor='#ddd'" ondrop="handleDrop(event)">
-      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:10px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="18"/><line x1="15" y1="15" x2="12" y2="18"/></svg>
+      <i class="ti ti-file-import" style="font-size:36px;color:#185FA5;display:block;margin-bottom:10px"></i>
       <div style="font-size:14px;color:#555">Arrastrá el archivo aquí o <span style="color:#185FA5;font-weight:500">hacé click para elegir</span></div>
       <div style="font-size:12px;color:#aaa;margin-top:6px">.xlsx o .xls</div>
     </div>
@@ -327,7 +337,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
       </div>
       <div style="display:flex;gap:8px;margin-top:16px">
         <button class="btn" onclick="resetImport()">Cancelar</button>
-        <button class="btn primary" id="btn-do-import" onclick="doImport()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar datos</button>
+        <button class="btn primary" id="btn-do-import" onclick="doImport()"><i class="ti ti-upload"></i> Importar datos</button>
       </div>
     </div>
     <div id="import-result" style="display:none;margin-top:16px"></div>
@@ -346,101 +356,96 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ─── BASE DE DATOS ───────────────────────────────────────────────
 // ─── SUPABASE ────────────────────────────────────────────────────
 const SUPA_URL = 'https://ekzfzfpywpiuqyoxwfkp.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVremZ6ZnB5d3BpdXF5b3h3ZmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExOTUyMTgsImV4cCI6MjA5Njc3MTIxOH0.f3wUbLAsYA5sHG-G3KZ77E4GggpFGm1gaVYNatcWS0o';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+const BUCKET = 'documentos-compras';
 
 const DB = {
-  nextId: 1,
-  anioActual: '2026',
-  historial: [],
-  pvSlots: 3,
-  pcSlots: 3,
-  productos: [],
-  ventas: [],
-  compras: [],
+  nextId:1, anioActual:'2026', historial:[], pvSlots:3, pcSlots:3,
+  productos:[], ventas:[], compras:[],
 };
 
 // ─── API HELPERS ─────────────────────────────────────────────────
-async function apiGet(table, filters={}) {
-  let q = supa.from(table).select('*');
-  Object.entries(filters).forEach(([k,v]) => q = q.eq(k, v));
-  const {data, error} = await q.order('id');
-  if(error) console.error('GET '+table, error);
-  return data || [];
+async function apiGet(table,filters={}){
+  let q=supa.from(table).select('*');
+  Object.entries(filters).forEach(([k,v])=>q=q.eq(k,v));
+  const{data,error}=await q.order('id');
+  if(error)console.error('GET '+table,error);
+  return data||[];
 }
-
-async function apiInsert(table, row) {
-  const {data, error} = await supa.from(table).insert(row).select().single();
-  if(error) { console.error('INSERT '+table, error); return null; }
+async function apiInsert(table,row){
+  const{data,error}=await supa.from(table).insert(row).select().single();
+  if(error){console.error('INSERT '+table,error);return null;}
   return data;
 }
-
-async function apiUpdate(table, id, row) {
-  const {error} = await supa.from(table).update(row).eq('id', id);
-  if(error) console.error('UPDATE '+table, error);
+async function apiUpdate(table,id,row){
+  const{error}=await supa.from(table).update(row).eq('id',id);
+  if(error)console.error('UPDATE '+table,error);
+}
+async function apiDelete(table,id){
+  const{error}=await supa.from(table).delete().eq('id',id);
+  if(error)console.error('DELETE '+table,error);
+}
+async function apiUpsert(table,row){
+  const{error}=await supa.from(table).upsert(row);
+  if(error)console.error('UPSERT '+table,error);
 }
 
-async function apiDelete(table, id) {
-  const {error} = await supa.from(table).delete().eq('id', id);
-  if(error) console.error('DELETE '+table, error);
+// ─── STORAGE HELPERS ─────────────────────────────────────────────
+async function uploadPDF(file, compraId) {
+  const ext = file.name.split('.').pop();
+  const path = `compra_${compraId}_${Date.now()}.${ext}`;
+  const { error } = await supa.storage.from(BUCKET).upload(path, file, { upsert: true });
+  if (error) { console.error('Upload error', error); return null; }
+  const { data } = supa.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
 }
 
-async function apiUpsert(table, row) {
-  const {error} = await supa.from(table).upsert(row);
-  if(error) console.error('UPSERT '+table, error);
+async function deletePDF(url) {
+  if (!url) return;
+  try {
+    const path = url.split('/'+BUCKET+'/')[1];
+    if (path) await supa.storage.from(BUCKET).remove([path]);
+  } catch(e) { console.error('Delete PDF error', e); }
 }
 
 // Loading overlay
-function showLoading(msg='Cargando...') {
-  let el = document.getElementById('loading-overlay');
-  if(!el) {
-    el = document.createElement('div');
-    el.id = 'loading-overlay';
-    el.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,.75);z-index:9999;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;gap:10px;backdrop-filter:blur(2px)';
-    el.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity=".25"/><path d="M12 2a10 10 0 0 1 10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".8s" repeatCount="indefinite"/></path></svg><span id="loading-msg">'+msg+'</span>';
+function showLoading(msg='Cargando...'){
+  let el=document.getElementById('loading-overlay');
+  if(!el){
+    el=document.createElement('div');
+    el.id='loading-overlay';
+    el.style.cssText='position:fixed;inset:0;background:rgba(255,255,255,.75);z-index:9999;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;gap:10px;backdrop-filter:blur(2px)';
+    el.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity=".25"/><path d="M12 2a10 10 0 0 1 10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".8s" repeatCount="indefinite"/></path></svg><span id="loading-msg">'+msg+'</span>';
     document.body.appendChild(el);
   }
-  document.getElementById('loading-msg').textContent = msg;
-  el.style.display = 'flex';
+  document.getElementById('loading-msg').textContent=msg;
+  el.style.display='flex';
 }
-function hideLoading() {
-  const el = document.getElementById('loading-overlay');
-  if(el) el.style.display = 'none';
-}
+function hideLoading(){const el=document.getElementById('loading-overlay');if(el)el.style.display='none';}
 
 // ─── LOAD ALL DATA ───────────────────────────────────────────────
-async function loadAll() {
+async function loadAll(){
   showLoading('Conectando con Supabase...');
-  try {
-    const [productos, ventas, compras, historial, config] = await Promise.all([
-      apiGet('productos'),
-      apiGet('ventas'),
-      apiGet('compras'),
-      apiGet('historial'),
+  try{
+    const[productos,ventas,compras,historial,config]=await Promise.all([
+      apiGet('productos'),apiGet('ventas'),apiGet('compras'),apiGet('historial'),
       supa.from('configuracion').select('*').eq('id',1).single(),
     ]);
-    DB.productos = productos;
-    DB.ventas = ventas;
-    DB.compras = compras;
-    DB.historial = historial;
-    if(config.data) {
-      DB.anioActual = config.data.anio_actual;
-      DB.pvSlots = config.data.pv_slots;
-      DB.pcSlots = config.data.pc_slots;
-      document.getElementById('sidebar-anio').textContent = DB.anioActual;
+    DB.productos=productos;DB.ventas=ventas;DB.compras=compras;DB.historial=historial;
+    if(config.data){
+      DB.anioActual=config.data.anio_actual;
+      DB.pvSlots=config.data.pv_slots;
+      DB.pcSlots=config.data.pc_slots;
+      document.getElementById('sidebar-anio').textContent=DB.anioActual;
     }
-  } catch(e) {
-    console.error('loadAll error', e);
-    alert('Error conectando con Supabase. Verificá tu conexión.');
-  }
+  }catch(e){console.error('loadAll error',e);alert('Error conectando con Supabase.');}
   hideLoading();
 }
-
-async function saveConfig() {
-  await apiUpsert('configuracion', {id:1, anio_actual:DB.anioActual, pv_slots:DB.pvSlots, pc_slots:DB.pcSlots});
+async function saveConfig(){
+  await apiUpsert('configuracion',{id:1,anio_actual:DB.anioActual,pv_slots:DB.pvSlots,pc_slots:DB.pcSlots});
 }
 
 // ─── UTILIDADES ──────────────────────────────────────────────────
@@ -459,6 +464,11 @@ function stockChip(s){
   if(s<=5)return `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:32px;padding:2px 8px;border-radius:6px;font-weight:700;font-size:13px;background:#FAEEDA;color:#633806;border:1px solid #f0d5a0">${s}</span>`;
   return `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:32px;padding:2px 8px;border-radius:6px;font-weight:700;font-size:13px;background:#E1F5EE;color:#085041;border:1px solid #a0dfc8">${s}</span>`;
 }
+function pdfIcon(url){
+  if(!url)return '<span style="color:#ccc;font-size:12px">—</span>';
+  return `<a href="${url}" target="_blank" title="Ver documento" style="color:#2E7D32;display:inline-flex;align-items:center;gap:3px;font-size:12px;text-decoration:none;font-weight:500"><i class="ti ti-file-type-pdf" style="font-size:18px"></i></a>`;
+}
+
 const PER=15;
 let invPage=1,venPage=1,comPage=1;
 let invFiltered=[],venFiltered=[],comFiltered=[];
@@ -489,31 +499,28 @@ function calcMetrics(){
   document.getElementById('m-ventas').textContent=gs(totalVentas);
 }
 
-// ─── ALERTAS ────────────────────────────────────────────────────
+// ─── ALERTAS ─────────────────────────────────────────────────────
 function renderAlertas(){
   const alertas=DB.productos.filter(p=>p.stock<=5).sort((a,b)=>a.stock-b.stock);
   document.querySelector('#tbl-alertas tbody').innerHTML=alertas.length
     ?alertas.map(p=>`<tr><td><code>${p.codigo}</code></td><td>${p.descripcion}</td><td>${p.categoria}</td><td style="text-align:center">${stockChip(p.stock)}</td></tr>`).join('')
-    :'<tr><td colspan="6" style="text-align:center;padding:20px;color:#aaa">✓ Todos los productos tienen stock suficiente</td></tr>';
+    :'<tr><td colspan="4" style="text-align:center;padding:20px;color:#aaa">✓ Todos los productos tienen stock suficiente</td></tr>';
 }
 
-// ─── CHARTS ─────────────────────────────────────────────────────
+// ─── CHARTS ──────────────────────────────────────────────────────
 let charts={};
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
-
 function initCharts(){
   const cats={};
   DB.productos.forEach(p=>{cats[p.categoria]=(cats[p.categoria]||0)+p.stock});
   const top8=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const palette=['#185FA5','#0F6E56','#D85A30','#D4537E','#639922','#BA7517','#534AB7','#5DCAA5'];
-
   destroyChart('cat');
   charts['cat']=new Chart(document.getElementById('chartCat'),{
     type:'bar',
     data:{labels:top8.map(e=>e[0]),datasets:[{label:'Stock',data:top8.map(e=>e[1]),backgroundColor:palette,borderRadius:4,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:30}},y:{beginAtZero:true,ticks:{font:{size:11}}}}}
   });
-
   const z=DB.productos.filter(p=>p.stock===0).length;
   const l=DB.productos.filter(p=>p.stock>0&&p.stock<=5).length;
   const o=DB.productos.filter(p=>p.stock>5).length;
@@ -524,7 +531,6 @@ function initCharts(){
     options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:12}}}}
   });
 }
-
 function initReportCharts(){
   const provs={};
   DB.compras.forEach(c=>{provs[c.proveedor]=(provs[c.proveedor]||0)+c.total});
@@ -534,7 +540,6 @@ function initReportCharts(){
     data:{labels:Object.keys(provs).map(k=>k+' ('+gs(provs[k])+')'),datasets:[{data:Object.values(provs),backgroundColor:['#185FA5','#0F6E56','#D85A30'],borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}
   });
-
   const top10=[...DB.productos].sort((a,b)=>b.stock-a.stock).slice(0,10);
   destroyChart('top');
   charts['top']=new Chart(document.getElementById('chartTop'),{
@@ -550,7 +555,6 @@ function populateCatFilter(){
   const sel=document.getElementById('inv-cat');
   sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
 }
-
 function filterInventario(){
   const q=document.getElementById('inv-search').value.toLowerCase();
   const cat=document.getElementById('inv-cat').value;
@@ -563,23 +567,18 @@ function filterInventario(){
   });
   invPage=1;renderInventario();
 }
-
 function buildInvHeader(){
-  const thead=document.querySelector('#tbl-inventario thead tr');
+  const thead=document.getElementById('inv-thead');
   const maxSlots=Math.max(DB.pcSlots,DB.pvSlots);
   let html='<th>Código</th><th>Descripción</th><th>Categoría</th>';
-  html+='<th style="text-align:right;border-right:2px solid #e5e4e0">PV<br><span style=\"font-size:10px;font-weight:400;color:#aaa\">Gs.</span></th>';
-  // Paired PC/PV columns
+  html+='<th style="text-align:right;border-right:2px solid #e5e4e0">PV<br><span style="font-size:10px;font-weight:400;color:#aaa">Gs.</span></th>';
   for(let i=1;i<=maxSlots;i++){
     html+=`<th style="text-align:right;background:#fafafa">PC${i}<br><span style="font-size:10px;font-weight:400;color:#aaa">Gs.</span></th>`;
     html+=`<th style="text-align:right;border-right:2px solid #e5e4e0">PV${i}<br><span style="font-size:10px;font-weight:400;color:#aaa">Gs.</span></th>`;
   }
-  // Stock columns + add buttons
-  html+=`<th style="text-align:right">Ini.</th><th style="text-align:right">Ent.</th><th style="text-align:right">Sal.</th><th style="text-align:right">Stock</th>`;
-  html+=`<th></th>`;
+  html+=`<th style="text-align:right">Ini.</th><th style="text-align:right">Ent.</th><th style="text-align:right">Sal.</th><th style="text-align:right">Stock</th><th></th>`;
   thead.innerHTML=html;
 }
-
 function openColumnsModal(){
   const maxSlots=Math.max(DB.pcSlots,DB.pvSlots);
   openModal(`
@@ -587,55 +586,27 @@ function openColumnsModal(){
   <div class="modal-body">
     <p style="font-size:13px;color:#555;margin-bottom:20px">Pares actuales: <strong>${maxSlots}</strong> (PC1…PC${maxSlots} / PV1…PV${maxSlots})</p>
     <div style="display:flex;gap:12px">
-      <button class="btn primary" onclick="addSlotPair();updateColumnsModal()" style="flex:1;justify-content:center">
-        <i class="ti ti-plus"></i> Agregar par PC/PV
-      </button>
-      <button class="btn" onclick="removeSlotPair();updateColumnsModal()" style="flex:1;justify-content:center;color:#993C1D;border-color:#993C1D">
-        <i class="ti ti-minus"></i> Eliminar último par
-      </button>
+      <button class="btn primary" onclick="addSlotPair();updateColumnsModal()" style="flex:1;justify-content:center"><i class="ti ti-plus"></i> Agregar par PC/PV</button>
+      <button class="btn" onclick="removeSlotPair();updateColumnsModal()" style="flex:1;justify-content:center;color:#993C1D;border-color:#993C1D"><i class="ti ti-minus"></i> Eliminar último par</button>
     </div>
   </div>
-  <div class="modal-actions">
-    <button class="btn primary" onclick="closeModal()">Listo</button>
-  </div>`);
+  <div class="modal-actions"><button class="btn primary" onclick="closeModal()">Listo</button></div>`);
 }
-
 function updateColumnsModal(){
   const maxSlots=Math.max(DB.pcSlots,DB.pvSlots);
   const p=document.querySelector('#modal-box .modal-body p');
-  if(p) p.innerHTML=`Pares actuales: <strong>${maxSlots}</strong> (PC1…PC${maxSlots} / PV1…PV${maxSlots})`;
+  if(p)p.innerHTML=`Pares actuales: <strong>${maxSlots}</strong> (PC1…PC${maxSlots} / PV1…PV${maxSlots})`;
 }
-
-
-async function addSlotPair(){
-  DB.pcSlots++;DB.pvSlots++;
-  await saveConfig();
-  buildInvHeader();renderInventario();
-}
-
+async function addSlotPair(){DB.pcSlots++;DB.pvSlots++;await saveConfig();buildInvHeader();renderInventario();}
 async function removeSlotPair(){
   const maxSlots=Math.max(DB.pcSlots,DB.pvSlots);
   if(maxSlots<=1){alert('Debe quedar al menos un par PC/PV.');return;}
   const hasData=DB.productos.some(p=>p['pc'+maxSlots]!=null||p['pv'+maxSlots]!=null);
   if(hasData&&!confirm(`El par PC${maxSlots}/PV${maxSlots} tiene datos cargados. ¿Eliminar de todas formas?`))return;
-  if(DB.pcSlots>=maxSlots) DB.pcSlots--;
-  if(DB.pvSlots>=maxSlots) DB.pvSlots--;
-  await saveConfig();
-  buildInvHeader();renderInventario();
+  if(DB.pcSlots>=maxSlots)DB.pcSlots--;
+  if(DB.pvSlots>=maxSlots)DB.pvSlots--;
+  await saveConfig();buildInvHeader();renderInventario();
 }
-
-function addPCSlot(){
-  DB.pcSlots++;
-  buildInvHeader();
-  renderInventario();
-}
-
-function addPVSlot(){
-  DB.pvSlots++;
-  buildInvHeader();
-  renderInventario();
-}
-
 function renderInventario(){
   buildInvHeader();
   const total=invFiltered.length;
@@ -652,8 +623,7 @@ function renderInventario(){
       cells+=`<td style="color:#888;font-size:12px">${p.categoria}</td>`;
       cells+=`<td style="text-align:right;border-right:2px solid #f0f0ec">${gn(p.pv)}</td>`;
       for(let i=1;i<=maxSlots;i++){
-        const pcVal=p['pc'+i];
-        const pvVal=p['pv'+i];
+        const pcVal=p['pc'+i];const pvVal=p['pv'+i];
         cells+=`<td style="text-align:right;background:#fafafa;color:${pcVal!=null?'inherit':'#ddd'}">${gn(pcVal)}</td>`;
         cells+=`<td style="text-align:right;border-right:2px solid #f0f0ec;color:${pvVal!=null?'inherit':'#ddd'}">${gn(pvVal)}</td>`;
       }
@@ -661,20 +631,22 @@ function renderInventario(){
       cells+=`<td style="text-align:right;color:#0F6E56">${p.entradas}</td>`;
       cells+=`<td style="text-align:right;color:#993C1D">${p.salidas}</td>`;
       cells+=`<td style="text-align:center">${stockChip(p.stock)}</td>`;
-      cells+=`<td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px"><button class='btn-icon btn-edit' onclick='editProducto(${p.id})' title='Editar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class='btn-icon btn-delete' onclick='deleteProducto(${p.id})' title='Eliminar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button></td>`;
+      cells+=`<td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px">
+        <button class='btn-icon btn-edit' onclick='editProducto(${p.id})' title='Editar'><i class="ti ti-pencil"></i></button>
+        <button class='btn-icon btn-delete' onclick='deleteProducto(${p.id})' title='Eliminar'><i class="ti ti-trash"></i></button>
+      </td>`;
       return `<tr>${cells}</tr>`;
     }).join('')
     :`<tr><td colspan="${totalCols}"><div class="empty-state"><i class="ti ti-search"></i>Sin resultados</div></td></tr>`;
   renderPagination('inv-pagination',pages,invPage,n=>{invPage=n;renderInventario()});
 }
 
-// ─── VENTAS ─────────────────────────────────────────────────────
+// ─── VENTAS ──────────────────────────────────────────────────────
 function filterVentas(){
   const q=document.getElementById('ven-search').value.toLowerCase();
   venFiltered=DB.ventas.filter(v=>!q||v.comprador.toLowerCase().includes(q)||v.codigo_producto.toLowerCase().includes(q)||v.descripcion.toLowerCase().includes(q));
   venPage=1;renderVentas();
 }
-
 function renderVentas(){
   const total=venFiltered.length;
   document.getElementById('ven-count').textContent=total+' registro'+(total!==1?'s':'');
@@ -682,27 +654,26 @@ function renderVentas(){
   const rows=venFiltered.slice((venPage-1)*PER,venPage*PER);
   document.querySelector('#tbl-ventas tbody').innerHTML=rows.length
     ?rows.map(v=>`<tr>
-      <td>${fmtFecha(v.fecha)}</td>
-      <td><code>${v.codigo_producto}</code></td>
-      <td>${v.descripcion}</td>
-      <td>${v.comprador}</td>
-      <td style="text-align:right">${v.cantidad}</td>
+      <td>${fmtFecha(v.fecha)}</td><td><code>${v.codigo_producto}</code></td><td>${v.descripcion}</td>
+      <td>${v.comprador}</td><td style="text-align:right">${v.cantidad}</td>
       <td style="text-align:right">${gs(v.precio)}</td>
       <td style="text-align:right;font-weight:600">${gs((v.precio||0)*v.cantidad)}</td>
       <td style="color:#888">${v.comprobante||'—'}</td>
-      <td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px"><button class='btn-icon btn-edit' onclick='editVenta(${v.id})' title='Editar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class='btn-icon btn-delete' onclick='deleteVenta(${v.id})' title='Eliminar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button></td>
+      <td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px">
+        <button class='btn-icon btn-edit' onclick='editVenta(${v.id})' title='Editar'><i class="ti ti-pencil"></i></button>
+        <button class='btn-icon btn-delete' onclick='deleteVenta(${v.id})' title='Eliminar'><i class="ti ti-trash"></i></button>
+      </td>
     </tr>`).join('')
     :'<tr><td colspan="9"><div class="empty-state"><i class="ti ti-shopping-cart"></i>Sin ventas registradas</div></td></tr>';
   renderPagination('ven-pagination',pages,venPage,n=>{venPage=n;renderVentas()});
 }
 
-// ─── COMPRAS ────────────────────────────────────────────────────
+// ─── COMPRAS ─────────────────────────────────────────────────────
 function filterCompras(){
   const q=document.getElementById('com-search').value.toLowerCase();
   comFiltered=DB.compras.filter(c=>!q||c.proveedor.toLowerCase().includes(q)||c.codigo_producto.toLowerCase().includes(q)||c.descripcion.toLowerCase().includes(q)||(c.factura||'').toLowerCase().includes(q));
   comPage=1;renderCompras();
 }
-
 function renderCompras(){
   const total=comFiltered.length;
   document.getElementById('com-count').textContent=total+' registro'+(total!==1?'s':'');
@@ -710,23 +681,23 @@ function renderCompras(){
   const rows=comFiltered.slice((comPage-1)*PER,comPage*PER);
   document.querySelector('#tbl-compras tbody').innerHTML=rows.length
     ?rows.map(c=>`<tr>
-      <td>${fmtFecha(c.fecha)}</td>
-      <td><code>${c.codigo_producto}</code></td>
-      <td>${c.descripcion}</td>
-      <td><strong>${c.proveedor}</strong></td>
-      <td style="text-align:right">${c.cantidad}</td>
+      <td>${fmtFecha(c.fecha)}</td><td><code>${c.codigo_producto}</code></td><td>${c.descripcion}</td>
+      <td><strong>${c.proveedor}</strong></td><td style="text-align:right">${c.cantidad}</td>
       <td style="text-align:right">${gs(c.precio_compra)}</td>
       <td style="text-align:right;font-weight:600">${gs(c.total)}</td>
       <td class="text-muted">${c.factura||'—'}</td>
-      <td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px"><button class='btn-icon btn-edit' onclick='editCompra(${c.id})' title='Editar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class='btn-icon btn-delete' onclick='deleteCompra(${c.id})' title='Eliminar'><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button></td>
+      <td>${pdfIcon(c.documento_url)}</td>
+      <td style="white-space:nowrap;display:flex;gap:4px;padding:8px 12px">
+        <button class='btn-icon btn-edit' onclick='editCompra(${c.id})' title='Editar'><i class="ti ti-pencil"></i></button>
+        <button class='btn-icon btn-delete' onclick='deleteCompra(${c.id})' title='Eliminar'><i class="ti ti-trash"></i></button>
+      </td>
     </tr>`).join('')
-    :'<tr><td colspan="9"><div class="empty-state"><i class="ti ti-truck"></i>Sin compras registradas</div></td></tr>';
+    :'<tr><td colspan="10"><div class="empty-state"><i class="ti ti-truck"></i>Sin compras registradas</div></td></tr>';
   renderPagination('com-pagination',pages,comPage,n=>{comPage=n;renderCompras()});
 }
 
-// ─── REPORTES ────────────────────────────────────────────────────
+// ─── REPORTES ─────────────────────────────────────────────────────
 function renderReportes(){
-  // Dynamic metrics
   const totalCompras=DB.compras.reduce((a,c)=>a+c.total,0);
   const totalVentas=DB.ventas.reduce((a,v)=>a+(v.precio||0)*v.cantidad,0);
   const diferencia=totalVentas-totalCompras;
@@ -737,7 +708,6 @@ function renderReportes(){
   dEl.textContent=gs(diferencia);
   dEl.className='metric-value '+(diferencia>=0?'positive':'negative');
   document.getElementById('rep-iva').textContent=gs(-iva);
-
   const buyers={};
   DB.ventas.forEach(v=>{
     if(!buyers[v.comprador])buyers[v.comprador]={count:0,units:0,total:0};
@@ -748,34 +718,23 @@ function renderReportes(){
     .sort((a,b)=>b[1].total-a[1].total)
     .map(([n,d])=>`<tr><td>${n}</td><td style="text-align:right">${d.count}</td><td style="text-align:right">${d.units}</td><td style="text-align:right;font-weight:600">${gs(d.total)}</td></tr>`).join('')
     ||'<tr><td colspan="4" style="text-align:center;padding:20px;color:#aaa">Sin datos</td></tr>';
-
   const cats={};
   DB.productos.forEach(p=>{
     if(!cats[p.categoria])cats[p.categoria]={productos:[],stock:0,zero:0};
-    cats[p.categoria].productos.push(p);
-    cats[p.categoria].stock+=p.stock;
+    cats[p.categoria].productos.push(p);cats[p.categoria].stock+=p.stock;
     if(p.stock===0)cats[p.categoria].zero++;
   });
   let catsHtml='';
   Object.entries(cats).sort((a,b)=>b[1].stock-a[1].stock).forEach(([nombre,d])=>{
-    // Category header row
-    catsHtml+=`<tr style="background:#f5f5f0">
-      <td colspan="2"><strong>${nombre}</strong></td>
-      <td style="text-align:center;font-weight:700;color:${d.zero===d.productos.length?'#993C1D':d.zero>0?'#BA7517':'#0F6E56'}">${d.stock}</td>
-    </tr>`;
-    // Individual product rows
+    catsHtml+=`<tr style="background:#f5f5f0"><td colspan="2"><strong>${nombre}</strong></td><td style="text-align:center;font-weight:700;color:${d.zero===d.productos.length?'#993C1D':d.zero>0?'#BA7517':'#0F6E56'}">${d.stock}</td></tr>`;
     d.productos.sort((a,b)=>b.stock-a.stock).forEach(p=>{
-      catsHtml+=`<tr>
-        <td style="padding-left:24px;color:#888;font-size:12px"><code>${p.codigo}</code></td>
-        <td style="color:#555;font-size:12px">${p.descripcion}</td>
-        <td style="text-align:center">${stockChip(p.stock)}</td>
-      </tr>`;
+      catsHtml+=`<tr><td style="padding-left:24px;color:#888;font-size:12px"><code>${p.codigo}</code></td><td style="color:#555;font-size:12px">${p.descripcion}</td><td style="text-align:center">${stockChip(p.stock)}</td></tr>`;
     });
   });
   document.querySelector('#tbl-rep-cats tbody').innerHTML=catsHtml||'<tr><td colspan="3" style="text-align:center;padding:20px;color:#aaa">Sin datos</td></tr>';
 }
 
-// ─── PAGINACIÓN ──────────────────────────────────────────────────
+// ─── PAGINACIÓN ───────────────────────────────────────────────────
 function renderPagination(id,pages,cur,cb){
   const el=document.getElementById(id);
   if(pages<=1){el.innerHTML='';return;}
@@ -788,15 +747,12 @@ function renderPagination(id,pages,cur,cb){
   el.innerHTML=html;
 }
 
-// ─── MODAL ──────────────────────────────────────────────────────
-function openModal(html){
-  document.getElementById('modal-box').innerHTML=html;
-  document.getElementById('modal-overlay').classList.add('open');
-}
+// ─── MODAL ────────────────────────────────────────────────────────
+function openModal(html){document.getElementById('modal-box').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');}
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open')}
 function handleOverlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
 
-// ─── AGREGAR PRODUCTO ────────────────────────────────────────────
+// ─── AGREGAR PRODUCTO ─────────────────────────────────────────────
 function openAddModal(){
   const cats=[...new Set(DB.productos.map(p=>p.categoria))].sort();
   openModal(`
@@ -810,7 +766,7 @@ function openAddModal(){
     <div class="form-row"><label>Categoría *</label>
       <select id="f-cat"><option value="">Seleccionar…</option>${cats.map(c=>`<option value="${c}">${c}</option>`).join('')}<option value="__nueva__">+ Nueva categoría…</option></select>
     </div>
-    <div id="f-nueva-cat-wrap" style="display:none" class="form-row"><label>Nueva categoría</label><input id="f-nueva-cat" type="text" placeholder="Nombre de la nueva categoría"></div>
+    <div id="f-nueva-cat-wrap" style="display:none" class="form-row"><label>Nueva categoría</label><input id="f-nueva-cat" type="text"></div>
     <div class="form-grid">
       <div class="form-row"><label>Precio de venta (Gs.)</label><input id="f-precio" type="number" placeholder="0" min="0"></div>
       <div class="form-row"><label>Stock inicial</label><input id="f-stock" type="number" value="0" min="0"></div>
@@ -824,7 +780,6 @@ function openAddModal(){
     document.getElementById('f-nueva-cat-wrap').style.display=this.value==='__nueva__'?'block':'none';
   };
 }
-
 async function saveProducto(){
   const cod=document.getElementById('f-cod').value.trim().toUpperCase();
   const desc=document.getElementById('f-desc').value.trim();
@@ -837,14 +792,31 @@ async function saveProducto(){
   const row={codigo:cod,descripcion:desc,categoria:cat,talle:document.getElementById('f-talle').value.trim(),pv:null,pv1:null,pc1:null,pv2:null,pc2:null,pv3:null,pc3:null,cant_inicial:stock,entradas:0,salidas:0,stock};
   showLoading('Guardando...');
   const saved=await apiInsert('productos',row);
-  if(saved){DB.productos.push(saved);}
-  hideLoading();
-  closeModal();refreshAll();
+  if(saved)DB.productos.push(saved);
+  hideLoading();closeModal();refreshAll();
 }
 
-// ─── EDITAR PRODUCTO ────────────────────────────────────────────
+// ─── EDITAR PRODUCTO ──────────────────────────────────────────────
 function editProducto(id){
   const p=DB.productos.find(x=>x.id===id);
+  // Get purchases for this product
+  const comprasDelProducto=DB.compras.filter(c=>c.codigo_producto.toUpperCase()===p.codigo.toUpperCase());
+  let comprasHtml='';
+  if(comprasDelProducto.length>0){
+    comprasHtml=comprasDelProducto.map(c=>`
+      <div class="compra-doc-row">
+        <span class="fecha">${fmtFecha(c.fecha)}</span>
+        <span class="prov">${c.proveedor}</span>
+        <span class="monto">${gs(c.total)}</span>
+        ${c.documento_url
+          ?`<a href="${c.documento_url}" target="_blank" style="color:#2E7D32;display:inline-flex;align-items:center;gap:3px;font-size:12px;text-decoration:none;font-weight:500"><i class="ti ti-file-type-pdf" style="font-size:16px"></i> Ver</a>`
+          :`<span style="font-size:11px;color:#bbb">Sin doc.</span>`
+        }
+      </div>`).join('');
+  } else {
+    comprasHtml='<div style="font-size:12px;color:#aaa;padding:8px 0">Sin compras registradas para este producto.</div>';
+  }
+
   openModal(`
   <div class="modal-header"><h3>Editar producto</h3><button class="modal-close" onclick="closeModal()">×</button></div>
   <div class="modal-body">
@@ -869,32 +841,33 @@ function editProducto(id){
     <div style="font-size:12px;font-weight:600;color:#555;margin:12px 0 6px">Precios de venta (editable)</div>
     <div class="form-grid">
       <div class="form-row"><label>PV1</label><input id="e-pv1" type="number" placeholder="0" value="${p.pv1||''}"></div>
-      <div class="form-row"><label>PV2 — solo si cambió</label><input id="e-pv2" type="number" placeholder="vacío si igual a PV1" value="${p.pv2||''}"></div>
+      <div class="form-row"><label>PV2</label><input id="e-pv2" type="number" placeholder="vacío si igual a PV1" value="${p.pv2||''}"></div>
     </div>
     <div class="form-grid" style="max-width:50%">
-      <div class="form-row"><label>PV3 — solo si cambió</label><input id="e-pv3" type="number" placeholder="vacío si igual a PV2" value="${p.pv3||''}"></div>
+      <div class="form-row"><label>PV3</label><input id="e-pv3" type="number" placeholder="vacío si igual a PV2" value="${p.pv3||''}"></div>
     </div>
     <div class="form-grid">
-      <div class="form-row"><label>Stock inicial (Ini.)</label><input id="e-ini" type="number" value="${p.cant_inicial}" min="0"><div class="hint">Modifica el stock base del período</div></div>
+      <div class="form-row"><label>Stock inicial (Ini.)</label><input id="e-ini" type="number" value="${p.cant_inicial}" min="0"></div>
     </div>
     <div class="form-grid" style="margin-top:14px">
-      <div class="form-row"><label>Entradas a agregar</label><input id="e-ent" type="number" value="0" min="0"><div class="hint">Suma al stock actual</div></div>
-      <div class="form-row"><label>Salidas a agregar</label><input id="e-sal" type="number" value="0" min="0"><div class="hint">Resta del stock actual</div></div>
+      <div class="form-row"><label>Entradas a agregar</label><input id="e-ent" type="number" value="0" min="0"></div>
+      <div class="form-row"><label>Salidas a agregar</label><input id="e-sal" type="number" value="0" min="0"></div>
     </div>
+    <div style="font-size:12px;font-weight:600;color:#555;margin:16px 0 8px;display:flex;align-items:center;gap:6px"><i class="ti ti-file-type-pdf" style="color:#2E7D32"></i> Compras y documentos</div>
+    <div class="compras-producto-list">${comprasHtml}</div>
   </div>
   <div class="modal-actions">
     <button class="btn" onclick="closeModal()">Cancelar</button>
     <button class="btn primary" onclick="updateProducto(${id})"><i class="ti ti-check"></i> Actualizar</button>
   </div>`);
 }
-
 async function updateProducto(id){
   const p=DB.productos.find(x=>x.id===id);
   p.descripcion=document.getElementById('e-desc').value.trim()||p.descripcion;
   p.pv=parseFloat(document.getElementById('e-pv').value)||null;
   for(let i=1;i<=DB.pvSlots;i++){
     const el=document.getElementById('e-pv'+i);
-    if(el) p['pv'+i]=parseFloat(el.value)||null;
+    if(el)p['pv'+i]=parseFloat(el.value)||null;
   }
   const ent=Math.max(0,parseInt(document.getElementById('e-ent').value)||0);
   const sal=Math.max(0,parseInt(document.getElementById('e-sal').value)||0);
@@ -903,17 +876,16 @@ async function updateProducto(id){
   p.stock=p.cant_inicial+p.entradas-p.salidas;
   showLoading('Guardando...');
   await apiUpdate('productos',id,{descripcion:p.descripcion,pv:p.pv,pv1:p.pv1,pv2:p.pv2,pv3:p.pv3,pc1:p.pc1,pc2:p.pc2,pc3:p.pc3,cant_inicial:p.cant_inicial,entradas:p.entradas,salidas:p.salidas,stock:p.stock});
-  hideLoading();
-  closeModal();refreshAll();
+  hideLoading();closeModal();refreshAll();
 }
 
-// ─── NUEVA VENTA ────────────────────────────────────────────────
+// ─── NUEVA VENTA ──────────────────────────────────────────────────
 function openVentaModal(){
   openModal(`
   <div class="modal-header"><h3>Registrar venta</h3><button class="modal-close" onclick="closeModal()">×</button></div>
   <div class="modal-body">
     <div class="form-grid">
-      <div class="form-row"><label>Fecha *</label><input id="v-fecha" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="form-row"><label>Fecha *</label><input id="v-fecha" type="date" value="${todayISO()}"></div>
       <div class="form-row"><label>Nro. comprobante</label><input id="v-comp" type="text" placeholder="Factura, recibo…"></div>
     </div>
     <div class="form-row"><label>Código de producto *</label><input id="v-cod" type="text" placeholder="Ej: CT6" oninput="autoFillVenta()" style="text-transform:uppercase"></div>
@@ -933,7 +905,6 @@ function openVentaModal(){
     <button class="btn primary" onclick="saveVenta()"><i class="ti ti-check"></i> Registrar</button>
   </div>`);
 }
-
 function autoFillVenta(){
   const cod=document.getElementById('v-cod').value.trim().toUpperCase();
   const p=DB.productos.find(x=>x.codigo.toUpperCase()===cod);
@@ -941,41 +912,22 @@ function autoFillVenta(){
   const btns=document.getElementById('v-pv-btns');
   if(p){
     document.getElementById('v-desc').value=p.descripcion;
-    // Build PV option buttons
     const pvs=[];
-    if(p.pv!=null) pvs.push({label:'PV',val:p.pv});
+    if(p.pv!=null)pvs.push({label:'PV',val:p.pv});
     for(let i=1;i<=DB.pvSlots;i++){if(p['pv'+i]!=null)pvs.push({label:'PV'+i,val:p['pv'+i]});}
     if(pvs.length>0){
       wrap.style.display='block';
-      btns.innerHTML=pvs.map(pv=>`
-        <button type="button" class="btn btn-sm" style="border-color:#185FA5;color:#185FA5"
-          onclick="selectPV(${pv.val},this)">
-          ${pv.label}: ${Math.round(pv.val).toLocaleString('es-PY')} Gs.
-        </button>`).join('');
-      // Auto-select last PV
+      btns.innerHTML=pvs.map(pv=>`<button type="button" class="btn btn-sm" style="border-color:#185FA5;color:#185FA5" onclick="selectPV(${pv.val},this)">${pv.label}: ${Math.round(pv.val).toLocaleString('es-PY')} Gs.</button>`).join('');
       document.getElementById('v-precio').value=pvs[pvs.length-1].val;
-      btns.lastElementChild.style.background='#185FA5';
-      btns.lastElementChild.style.color='#fff';
-    } else {
-      wrap.style.display='none';
-      btns.innerHTML='';
-    }
-  } else {
-    wrap.style.display='none';
-    btns.innerHTML='';
-    document.getElementById('v-desc').value='';
-  }
+      btns.lastElementChild.style.background='#185FA5';btns.lastElementChild.style.color='#fff';
+    } else {wrap.style.display='none';btns.innerHTML='';}
+  } else {wrap.style.display='none';btns.innerHTML='';document.getElementById('v-desc').value='';}
 }
-
-function selectPV(val, btn){
+function selectPV(val,btn){
   document.getElementById('v-precio').value=val;
-  // Highlight selected button
-  document.querySelectorAll('#v-pv-btns button').forEach(b=>{
-    b.style.background='';b.style.color='#185FA5';
-  });
+  document.querySelectorAll('#v-pv-btns button').forEach(b=>{b.style.background='';b.style.color='#185FA5';});
   btn.style.background='#185FA5';btn.style.color='#fff';
 }
-
 async function saveVenta(){
   const cod=document.getElementById('v-cod').value.trim().toUpperCase();
   const comprador=document.getElementById('v-comprador').value.trim();
@@ -987,29 +939,45 @@ async function saveVenta(){
     p.salidas+=cant;p.stock=p.cant_inicial+p.entradas-p.salidas;
     showLoading('Guardando...');
     await apiUpdate('productos',p.id,{salidas:p.salidas,stock:p.stock});
-  } else { showLoading('Guardando...'); }
+  } else {showLoading('Guardando...');}
   const row={fecha:document.getElementById('v-fecha').value,codigo_producto:cod,descripcion:document.getElementById('v-desc').value||cod,cantidad:cant,precio:parseFloat(document.getElementById('v-precio').value)||null,comprador,comprobante:document.getElementById('v-comp').value};
   const saved=await apiInsert('ventas',row);
-  if(saved) DB.ventas.unshift(saved);
-  hideLoading();
-  closeModal();refreshAll();
+  if(saved)DB.ventas.unshift(saved);
+  hideLoading();closeModal();refreshAll();
 }
 
-// ─── NUEVA COMPRA ────────────────────────────────────────────────
+// ─── NUEVA COMPRA ─────────────────────────────────────────────────
+// Temporary PDF file holder
+let _pendingPDFFile = null;
+
 function openCompraModal(){
+  _pendingPDFFile = null;
   openModal(`
   <div class="modal-header"><h3>Registrar compra</h3><button class="modal-close" onclick="closeModal()">×</button></div>
   <div class="modal-body">
     <div class="form-grid">
-      <div class="form-row"><label>Fecha *</label><input id="c-fecha" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="form-row"><label>Fecha *</label><input id="c-fecha" type="date" value="${todayISO()}"></div>
       <div class="form-row"><label>Proveedor *</label><input id="c-prov" type="text" placeholder="Ej: DADIG, Estatex…"></div>
-      <div class="form-row"><label>Factura N°</label><input id="c-factura" type="text" placeholder="Nro. de factura"></div>
     </div>
+    <div class="form-row"><label>Factura N°</label><input id="c-factura" type="text" placeholder="Nro. de factura"></div>
     <div class="form-row"><label>Código de producto *</label><input id="c-cod" type="text" oninput="autoFillCompra()" placeholder="Ej: BT6" style="text-transform:uppercase"></div>
     <div class="form-row"><label>Descripción</label><input id="c-desc" type="text" placeholder="Se completa automáticamente"></div>
     <div class="form-grid">
       <div class="form-row"><label>Cantidad *</label><input id="c-cant" type="number" value="1" min="1"></div>
       <div class="form-row"><label>Precio compra unit. (Gs.)</label><input id="c-precio" type="number" placeholder="0" min="0"></div>
+    </div>
+    <div class="form-row">
+      <label>Documento (factura / pedido PDF)</label>
+      <div class="pdf-upload-area" onclick="document.getElementById('c-pdf-input').click()">
+        <i class="ti ti-file-type-pdf"></i>
+        <p>Click para adjuntar PDF</p>
+      </div>
+      <input type="file" id="c-pdf-input" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="previewPDF(this)">
+      <div id="c-pdf-preview" style="display:none" class="pdf-preview">
+        <i class="ti ti-file-type-pdf"></i>
+        <span id="c-pdf-name"></span>
+        <button type="button" class="btn btn-sm danger" onclick="clearPDF()">Quitar</button>
+      </div>
     </div>
   </div>
   <div class="modal-actions">
@@ -1018,50 +986,195 @@ function openCompraModal(){
   </div>`);
 }
 
+function previewPDF(input){
+  const file=input.files[0];
+  if(!file)return;
+  _pendingPDFFile=file;
+  document.getElementById('c-pdf-name').textContent=file.name;
+  document.getElementById('c-pdf-preview').style.display='flex';
+  document.querySelector('.pdf-upload-area').style.display='none';
+}
+function clearPDF(){
+  _pendingPDFFile=null;
+  document.getElementById('c-pdf-input').value='';
+  document.getElementById('c-pdf-preview').style.display='none';
+  document.querySelector('.pdf-upload-area').style.display='block';
+}
+
 function autoFillCompra(){
   const cod=document.getElementById('c-cod').value.trim().toUpperCase();
   const p=DB.productos.find(x=>x.codigo.toUpperCase()===cod);
   if(p)document.getElementById('c-desc').value=p.descripcion;
 }
 
-function saveCompra(){
+async function saveCompra(){
   const cod=document.getElementById('c-cod').value.trim().toUpperCase();
   const prov=document.getElementById('c-prov').value.trim();
   const cant=parseInt(document.getElementById('c-cant').value)||0;
   const precio=parseFloat(document.getElementById('c-precio').value)||0;
   if(!cod||!prov||cant<1){alert('Complete código, proveedor y cantidad.');return;}
+  showLoading('Guardando compra...');
   const p=DB.productos.find(x=>x.codigo.toUpperCase()===cod);
   if(p){
     p.entradas+=cant;
     p.stock=p.cant_inicial+p.entradas-p.salidas;
-    // Auto-update PC fields only when price changes
     if(precio>0){
-      // Find last filled PC slot
       let lastSlot=0;
       for(let i=1;i<=DB.pcSlots;i++){if(p['pc'+i]!=null)lastSlot=i;}
-      if(lastSlot===0){
-        p.pc1=precio; // First purchase
-      } else {
-        const lastPrice=p['pc'+lastSlot];
-        if(precio!==lastPrice){
-          const nextSlot=lastSlot+1;
-          if(nextSlot>DB.pcSlots){DB.pcSlots=nextSlot;buildInvHeader();}
-          p['pc'+nextSlot]=precio;
-        }
+      if(lastSlot===0){p.pc1=precio;}
+      else{const lastPrice=p['pc'+lastSlot];if(precio!==lastPrice){const nextSlot=lastSlot+1;if(nextSlot>DB.pcSlots){DB.pcSlots=nextSlot;buildInvHeader();}p['pc'+nextSlot]=precio;}}
+    }
+    await apiUpdate('productos',p.id,{entradas:p.entradas,stock:p.stock,pc1:p.pc1,pc2:p.pc2,pc3:p.pc3});
+  }
+  // Insert compra first to get its ID
+  const row={fecha:document.getElementById('c-fecha').value,codigo_producto:cod,descripcion:document.getElementById('c-desc').value||cod,cantidad:cant,precio_compra:precio,total:precio*cant,proveedor:prov,factura:document.getElementById('c-factura').value.trim(),documento_url:null};
+  const saved=await apiInsert('compras',row);
+  if(saved){
+    // Upload PDF if present
+    if(_pendingPDFFile && saved.id){
+      showLoading('Subiendo documento...');
+      const url=await uploadPDF(_pendingPDFFile, saved.id);
+      if(url){
+        saved.documento_url=url;
+        await apiUpdate('compras',saved.id,{documento_url:url});
       }
     }
+    DB.compras.unshift(saved);
   }
-  DB.compras.unshift({id:DB.nextId++,fecha:document.getElementById('c-fecha').value,codigo_producto:cod,descripcion:document.getElementById('c-desc').value||cod,cantidad:cant,precio_compra:precio,total:precio*cant,proveedor:prov,factura:document.getElementById('c-factura').value.trim()});
-  closeModal();refreshAll();
+  _pendingPDFFile=null;
+  hideLoading();closeModal();refreshAll();
 }
 
-// ─── HISTORIAL ──────────────────────────────────────────────────
+// ─── EDITAR COMPRA ────────────────────────────────────────────────
+let _editPDFFile = null;
+
+function editCompra(id){
+  const c=DB.compras.find(x=>x.id===id);
+  _editPDFFile=null;
+  openModal(`
+  <div class="modal-header"><h3>Editar compra</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-row"><label>Fecha</label><input id="ec-fecha" type="date" value="${c.fecha}"></div>
+      <div class="form-row"><label>Proveedor</label><input id="ec-prov" type="text" value="${c.proveedor}"></div>
+    </div>
+    <div class="form-row"><label>Código producto</label><input id="ec-cod" type="text" value="${c.codigo_producto}" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="form-row"><label>Descripción</label><input id="ec-desc" type="text" value="${c.descripcion}"></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Cantidad</label><input id="ec-cant" type="number" value="${c.cantidad}" min="1"></div>
+      <div class="form-row"><label>Precio compra unit. (Gs.)</label><input id="ec-precio" type="number" value="${c.precio_compra||''}"></div>
+    </div>
+    <div class="form-row"><label>Factura N°</label><input id="ec-factura" type="text" value="${c.factura||''}"></div>
+    <div class="form-row">
+      <label>Documento adjunto</label>
+      ${c.documento_url
+        ?`<div class="pdf-preview" id="ec-pdf-current">
+            <i class="ti ti-file-type-pdf"></i>
+            <span>Documento actual</span>
+            <a href="${c.documento_url}" target="_blank">Ver</a>
+            <button type="button" class="btn btn-sm danger" onclick="removeEditPDF(${id})">Eliminar</button>
+          </div>`
+        :`<div class="pdf-upload-area" id="ec-upload-area" onclick="document.getElementById('ec-pdf-input').click()">
+            <i class="ti ti-file-type-pdf"></i>
+            <p>Click para adjuntar PDF</p>
+          </div>`
+      }
+      <input type="file" id="ec-pdf-input" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="previewEditPDF(this)">
+      <div id="ec-pdf-preview" style="display:none" class="pdf-preview">
+        <i class="ti ti-file-type-pdf"></i>
+        <span id="ec-pdf-name"></span>
+        <button type="button" class="btn btn-sm danger" onclick="clearEditPDF()">Quitar</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn primary" onclick="saveEditCompra(${id})"><i class="ti ti-check"></i> Guardar</button>
+  </div>`);
+}
+
+function previewEditPDF(input){
+  const file=input.files[0];
+  if(!file)return;
+  _editPDFFile=file;
+  document.getElementById('ec-pdf-name').textContent=file.name;
+  document.getElementById('ec-pdf-preview').style.display='flex';
+  const ua=document.getElementById('ec-upload-area');
+  if(ua)ua.style.display='none';
+}
+function clearEditPDF(){
+  _editPDFFile=null;
+  document.getElementById('ec-pdf-input').value='';
+  document.getElementById('ec-pdf-preview').style.display='none';
+  const ua=document.getElementById('ec-upload-area');
+  if(ua)ua.style.display='block';
+}
+async function removeEditPDF(id){
+  if(!confirm('¿Eliminar el documento adjunto?'))return;
+  const c=DB.compras.find(x=>x.id===id);
+  if(c&&c.documento_url){
+    showLoading('Eliminando documento...');
+    await deletePDF(c.documento_url);
+    c.documento_url=null;
+    await apiUpdate('compras',id,{documento_url:null});
+    hideLoading();
+  }
+  // Refresh modal
+  editCompra(id);
+}
+
+async function saveEditCompra(id){
+  const c=DB.compras.find(x=>x.id===id);
+  const cantAnterior=c.cantidad;
+  const codAnterior=c.codigo_producto;
+  const nuevaCant=parseInt(document.getElementById('ec-cant').value)||0;
+  const nuevoCod=document.getElementById('ec-cod').value.trim().toUpperCase();
+  const nuevoPrecio=parseFloat(document.getElementById('ec-precio').value)||0;
+  showLoading('Guardando...');
+  const pAnterior=DB.productos.find(x=>x.codigo.toUpperCase()===codAnterior.toUpperCase());
+  if(pAnterior){
+    pAnterior.entradas-=cantAnterior;
+    pAnterior.entradas=Math.max(0,pAnterior.entradas); // BUG FIX
+    pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;
+    await apiUpdate('productos',pAnterior.id,{entradas:pAnterior.entradas,stock:pAnterior.stock});
+  }
+  const pNuevo=DB.productos.find(x=>x.codigo.toUpperCase()===nuevoCod);
+  if(pNuevo){
+    pNuevo.entradas+=nuevaCant;
+    pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;
+    if(nuevoPrecio>0){
+      let lastSlot=0;
+      for(let i=1;i<=DB.pcSlots;i++){if(pNuevo['pc'+i]!=null)lastSlot=i;}
+      if(lastSlot===0){pNuevo.pc1=nuevoPrecio;}
+      else if(nuevoPrecio!==pNuevo['pc'+lastSlot]){const nextSlot=lastSlot+1;if(nextSlot>DB.pcSlots){DB.pcSlots=nextSlot;await saveConfig();buildInvHeader();}pNuevo['pc'+nextSlot]=nuevoPrecio;}
+    }
+    await apiUpdate('productos',pNuevo.id,{entradas:pNuevo.entradas,stock:pNuevo.stock,pc1:pNuevo.pc1,pc2:pNuevo.pc2,pc3:pNuevo.pc3});
+  }
+  // Handle PDF upload
+  let docUrl=c.documento_url;
+  if(_editPDFFile){
+    if(docUrl)await deletePDF(docUrl);
+    showLoading('Subiendo documento...');
+    docUrl=await uploadPDF(_editPDFFile,id);
+  }
+  c.fecha=document.getElementById('ec-fecha').value;
+  c.proveedor=document.getElementById('ec-prov').value;
+  c.codigo_producto=nuevoCod;
+  c.descripcion=document.getElementById('ec-desc').value;
+  c.cantidad=nuevaCant;c.precio_compra=nuevoPrecio;c.total=nuevoPrecio*nuevaCant;
+  c.factura=document.getElementById('ec-factura').value.trim();
+  c.documento_url=docUrl;
+  await apiUpdate('compras',id,{fecha:c.fecha,proveedor:c.proveedor,codigo_producto:c.codigo_producto,descripcion:c.descripcion,cantidad:c.cantidad,precio_compra:c.precio_compra,total:c.total,factura:c.factura,documento_url:docUrl});
+  _editPDFFile=null;
+  hideLoading();closeModal();refreshAll();
+}
+
+// ─── HISTORIAL ────────────────────────────────────────────────────
 function populateHistAnios(){
   const anios=[...new Set(DB.historial.map(h=>h.anio))].sort((a,b)=>b.localeCompare(a));
   const sel=document.getElementById('hist-anio');
   sel.innerHTML='<option value="">Todos los años</option>'+anios.map(a=>`<option value="${a}">${a}</option>`).join('');
 }
-
 function filterHistorial(){
   const anio=document.getElementById('hist-anio').value;
   const tipo=document.getElementById('hist-tipo').value;
@@ -1075,32 +1188,182 @@ function filterHistorial(){
       :'<tr><td colspan="9" style="text-align:center;padding:20px;color:#aaa">Sin registros</td></tr>';
   } else {
     document.querySelector('#tbl-historial-compras tbody').innerHTML=compras.length
-      ?compras.map(h=>`<tr><td><strong>${h.anio}</strong></td><td>${fmtFecha(h.fecha)}</td><td><code>${h.codigo_producto}</code></td><td>${h.descripcion}</td><td>${h.proveedor||'—'}</td><td style="text-align:right">${h.cantidad}</td><td style="text-align:right">${gs(h.precio_compra)}</td><td style="text-align:right;font-weight:600">${gs(h.total)}</td><td class="text-muted">${h.factura||'—'}</td></tr>`).join('')
-      :'<tr><td colspan="8" style="text-align:center;padding:20px;color:#aaa">Sin registros</td></tr>';
+      ?compras.map(h=>`<tr><td><strong>${h.anio}</strong></td><td>${fmtFecha(h.fecha)}</td><td><code>${h.codigo_producto}</code></td><td>${h.descripcion}</td><td>${h.proveedor||'—'}</td><td style="text-align:right">${h.cantidad}</td><td style="text-align:right">${gs(h.precio_compra)}</td><td style="text-align:right;font-weight:600">${gs(h.total)}</td><td class="text-muted">${h.factura||'—'}</td><td>${pdfIcon(h.documento_url)}</td></tr>`).join('')
+      :'<tr><td colspan="10" style="text-align:center;padding:20px;color:#aaa">Sin registros</td></tr>';
   }
 }
 
+// ─── ELIMINAR VENTA ───────────────────────────────────────────────
+async function deleteVenta(id){
+  const v=DB.ventas.find(x=>x.id===id);
+  if(!confirm(`¿Eliminar venta de "${v.comprador}" (${v.codigo_producto} × ${v.cantidad})?`))return;
+  showLoading('Eliminando...');
+  const p=DB.productos.find(x=>x.codigo.toUpperCase()===v.codigo_producto.toUpperCase());
+  if(p){
+    p.salidas-=v.cantidad;
+    p.salidas=Math.max(0,p.salidas); // BUG FIX
+    p.stock=p.cant_inicial+p.entradas-p.salidas;
+    await apiUpdate('productos',p.id,{salidas:p.salidas,stock:p.stock});
+  }
+  await apiDelete('ventas',id);
+  DB.ventas=DB.ventas.filter(x=>x.id!==id);
+  hideLoading();refreshAll();
+}
+
+// ─── ELIMINAR COMPRA ──────────────────────────────────────────────
+async function deleteCompra(id){
+  const c=DB.compras.find(x=>x.id===id);
+  if(!confirm(`¿Eliminar compra de "${c.proveedor}" (${c.codigo_producto} × ${c.cantidad})?`))return;
+  showLoading('Eliminando...');
+  const p=DB.productos.find(x=>x.codigo.toUpperCase()===c.codigo_producto.toUpperCase());
+  if(p){
+    p.entradas-=c.cantidad;
+    p.entradas=Math.max(0,p.entradas); // BUG FIX
+    p.stock=p.cant_inicial+p.entradas-p.salidas;
+    // BUG FIX: Clean PC fields if no more purchases for this product
+    const otrasCompras=DB.compras.filter(x=>x.id!==id&&x.codigo_producto.toUpperCase()===c.codigo_producto.toUpperCase());
+    if(otrasCompras.length===0){
+      p.pc1=null;p.pc2=null;p.pc3=null;
+    }
+    await apiUpdate('productos',p.id,{entradas:p.entradas,stock:p.stock,pc1:p.pc1,pc2:p.pc2,pc3:p.pc3});
+  }
+  // Delete PDF from storage if exists
+  if(c.documento_url)await deletePDF(c.documento_url);
+  await apiDelete('compras',id);
+  DB.compras=DB.compras.filter(x=>x.id!==id);
+  hideLoading();refreshAll();
+}
+
+// ─── EDITAR VENTA ─────────────────────────────────────────────────
+function editVenta(id){
+  const v=DB.ventas.find(x=>x.id===id);
+  openModal(`
+  <div class="modal-header"><h3>Editar venta</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-row"><label>Fecha</label><input id="ev-fecha" type="date" value="${v.fecha}"></div>
+      <div class="form-row"><label>Comprobante</label><input id="ev-comp" type="text" value="${v.comprobante||''}"></div>
+    </div>
+    <div class="form-row"><label>Código producto</label><input id="ev-cod" type="text" value="${v.codigo_producto}" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="form-row"><label>Descripción</label><input id="ev-desc" type="text" value="${v.descripcion}"></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Cantidad</label><input id="ev-cant" type="number" value="${v.cantidad}" min="1"></div>
+      <div class="form-row"><label>Precio unitario (Gs.)</label><input id="ev-precio" type="number" value="${v.precio||''}"></div>
+    </div>
+    <div class="form-row"><label>Comprador/a</label><input id="ev-comprador" type="text" value="${v.comprador}"></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn primary" onclick="saveEditVenta(${id})"><i class="ti ti-check"></i> Guardar</button>
+  </div>`);
+}
+async function saveEditVenta(id){
+  const v=DB.ventas.find(x=>x.id===id);
+  const cantAnterior=v.cantidad;
+  const codAnterior=v.codigo_producto;
+  const nuevaCant=parseInt(document.getElementById('ev-cant').value)||0;
+  const nuevoCod=document.getElementById('ev-cod').value.trim().toUpperCase();
+  showLoading('Guardando...');
+  const pAnterior=DB.productos.find(x=>x.codigo.toUpperCase()===codAnterior.toUpperCase());
+  if(pAnterior){
+    pAnterior.salidas-=cantAnterior;
+    pAnterior.salidas=Math.max(0,pAnterior.salidas); // BUG FIX
+    pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;
+    await apiUpdate('productos',pAnterior.id,{salidas:pAnterior.salidas,stock:pAnterior.stock});
+  }
+  const pNuevo=DB.productos.find(x=>x.codigo.toUpperCase()===nuevoCod);
+  if(pNuevo){
+    pNuevo.salidas+=nuevaCant;
+    pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;
+    await apiUpdate('productos',pNuevo.id,{salidas:pNuevo.salidas,stock:pNuevo.stock});
+  }
+  v.fecha=document.getElementById('ev-fecha').value;
+  v.comprobante=document.getElementById('ev-comp').value;
+  v.codigo_producto=nuevoCod;
+  v.descripcion=document.getElementById('ev-desc').value;
+  v.cantidad=nuevaCant;
+  v.precio=parseFloat(document.getElementById('ev-precio').value)||null;
+  v.comprador=document.getElementById('ev-comprador').value;
+  await apiUpdate('ventas',id,{fecha:v.fecha,comprobante:v.comprobante,codigo_producto:v.codigo_producto,descripcion:v.descripcion,cantidad:v.cantidad,precio:v.precio,comprador:v.comprador});
+  hideLoading();closeModal();refreshAll();
+}
+
+// ─── NUEVO AÑO ────────────────────────────────────────────────────
+function previewNuevoAnio(){
+  const nombre=document.getElementById('nuevo-anio-input').value.trim();
+  if(!nombre){alert('Ingresá el nombre del nuevo año.');return;}
+  const preview=document.getElementById('anio-preview');
+  const totalVentas=DB.ventas.length;
+  const totalCompras=DB.compras.length;
+  const stockTotal=DB.productos.reduce((a,p)=>a+p.stock,0);
+  const conPV=DB.productos.filter(p=>p.pv3||p.pv2||p.pv1||p.pv).length;
+  preview.style.display='block';
+  preview.innerHTML=`
+    <strong>Resumen del cierre — ${DB.anioActual} → ${nombre}</strong><br><br>
+    📦 ${DB.productos.length} productos · stock total: ${stockTotal} unidades → pasan como stock inicial<br>
+    💰 ${conPV} productos con PV → se actualiza con el último precio registrado<br>
+    🛒 ${totalVentas} ventas → se archivan en historial<br>
+    🚚 ${totalCompras} compras → se archivan en historial<br>
+    🔄 PC1…PV3 se limpian · entradas/salidas se resetean a 0
+  `;
+  document.getElementById('btn-confirmar-anio').style.display='inline-flex';
+}
+async function confirmarNuevoAnio(){
+  const nombre=document.getElementById('nuevo-anio-input').value.trim();
+  if(!nombre)return;
+  if(!confirm(`¿Confirmar cierre del año ${DB.anioActual} y apertura del año ${nombre}?`))return;
+  showLoading('Archivando datos del año '+DB.anioActual+'...');
+  const histRows=[
+    ...DB.ventas.map(v=>({...v,id:undefined,tipo:'venta',anio:DB.anioActual})),
+    ...DB.compras.map(c=>({...c,id:undefined,tipo:'compra',anio:DB.anioActual}))
+  ];
+  if(histRows.length>0){
+    const{error:he}=await supa.from('historial').insert(histRows);
+    if(he)console.error('historial insert',he);
+  }
+  await supa.from('ventas').delete().neq('id',0);
+  await supa.from('compras').delete().neq('id',0);
+  DB.ventas=[];DB.compras=[];
+  for(const p of DB.productos){
+    let ultimoPV=p.pv||null;
+    for(let i=DB.pvSlots;i>=1;i--){if(p['pv'+i]!=null){ultimoPV=p['pv'+i];break;}}
+    p.pv=ultimoPV;
+    for(let i=1;i<=DB.pvSlots;i++)p['pv'+i]=null;
+    for(let i=1;i<=DB.pcSlots;i++)p['pc'+i]=null;
+    p.cant_inicial=p.stock;p.entradas=0;p.salidas=0;
+    await apiUpdate('productos',p.id,{pv:p.pv,pv1:null,pv2:null,pv3:null,pc1:null,pc2:null,pc3:null,cant_inicial:p.cant_inicial,entradas:0,salidas:0});
+  }
+  DB.anioActual=nombre;
+  await saveConfig();
+  document.getElementById('sidebar-anio').textContent=nombre;
+  document.getElementById('nuevo-anio-input').value='';
+  document.getElementById('anio-preview').style.display='none';
+  document.getElementById('btn-confirmar-anio').style.display='none';
+  await loadAll();
+  hideLoading();
+  populateHistAnios();refreshAll();
+  alert(`✓ Año ${nombre} iniciado correctamente.`);
+  showPage('dashboard',document.querySelector('.nav-item'));
+}
+
+// ─── EXPORTAR EXCEL ───────────────────────────────────────────────
 function exportStockCatsExcel(){
   const wb=XLSX.utils.book_new();
   const wsData=[['Categoría','Código','Descripción','Stock','Estado']];
   const cats={};
   DB.productos.forEach(p=>{
     if(!cats[p.categoria])cats[p.categoria]={productos:[],stock:0};
-    cats[p.categoria].productos.push(p);
-    cats[p.categoria].stock+=p.stock;
+    cats[p.categoria].productos.push(p);cats[p.categoria].stock+=p.stock;
   });
   Object.entries(cats).sort((a,b)=>b[1].stock-a[1].stock).forEach(([nombre,d])=>{
-    // Category subtotal row
     wsData.push([nombre,'','TOTAL CATEGORÍA',d.stock,'']);
-    // Individual products
     d.productos.sort((a,b)=>b.stock-a.stock).forEach(p=>{
       const estado=p.stock===0?'Sin stock':p.stock<=5?'Stock bajo':'OK';
       wsData.push(['',p.codigo,p.descripcion,p.stock,estado]);
     });
-    wsData.push(['','','','','']); // blank separator
+    wsData.push(['','','','','']);
   });
   const ws=XLSX.utils.aoa_to_sheet(wsData);
-  // Column widths
   ws['!cols']=[{wch:25},{wch:12},{wch:40},{wch:10},{wch:12}];
   XLSX.utils.book_append_sheet(wb,ws,'Stock por categoría');
   XLSX.writeFile(wb,`stock_categorias_${DB.anioActual}.xlsx`);
@@ -1125,444 +1388,142 @@ function exportHistorialExcel(){
   XLSX.writeFile(wb,`historial_uniformes_${label}.xlsx`);
 }
 
-// ─── NUEVO AÑO ──────────────────────────────────────────────────
-function previewNuevoAnio(){
-  const nombre=document.getElementById('nuevo-anio-input').value.trim();
-  if(!nombre){alert('Ingresá el nombre del nuevo año.');return;}
-  const preview=document.getElementById('anio-preview');
-  const totalVentas=DB.ventas.length;
-  const totalCompras=DB.compras.length;
-  const stockTotal=DB.productos.reduce((a,p)=>a+p.stock,0);
-  const conPV=DB.productos.filter(p=>p.pv3||p.pv2||p.pv1||p.pv).length;
-  preview.style.display='block';
-  preview.innerHTML=`
-    <strong>Resumen del cierre — ${DB.anioActual} → ${nombre}</strong><br><br>
-    📦 ${DB.productos.length} productos · stock total: ${stockTotal} unidades → pasan como stock inicial<br>
-    💰 ${conPV} productos con PV → se actualiza con el último precio registrado<br>
-    🛒 ${totalVentas} ventas → se archivan en historial<br>
-    🚚 ${totalCompras} compras → se archivan en historial<br>
-    🔄 PC1…PV3 se limpian · entradas/salidas se resetean a 0
-  `;
-  document.getElementById('btn-confirmar-anio').style.display='inline-flex';
-}
-
-async function confirmarNuevoAnio(){
-  const nombre=document.getElementById('nuevo-anio-input').value.trim();
-  if(!nombre){return;}
-  if(!confirm(`¿Confirmar cierre del año ${DB.anioActual} y apertura del año ${nombre}?`))return;
-  showLoading('Archivando datos del año '+DB.anioActual+'...');
-  // Archive ventas and compras to historial
-  const histRows=[
-    ...DB.ventas.map(v=>({...v,id:undefined,tipo:'venta',anio:DB.anioActual})),
-    ...DB.compras.map(c=>({...c,id:undefined,tipo:'compra',anio:DB.anioActual}))
-  ];
-  if(histRows.length>0){
-    const {error:he}=await supa.from('historial').insert(histRows);
-    if(he) console.error('historial insert',he);
-  }
-  // Delete all ventas and compras
-  await supa.from('ventas').delete().neq('id',0);
-  await supa.from('compras').delete().neq('id',0);
-  DB.ventas=[];DB.compras=[];
-  // Update each product
-  for(const p of DB.productos){
-    let ultimoPV=p.pv||null;
-    for(let i=DB.pvSlots;i>=1;i--){if(p['pv'+i]!=null){ultimoPV=p['pv'+i];break;}}
-    p.pv=ultimoPV;
-    for(let i=1;i<=DB.pvSlots;i++) p['pv'+i]=null;
-    for(let i=1;i<=DB.pcSlots;i++) p['pc'+i]=null;
-    p.cant_inicial=p.stock;p.entradas=0;p.salidas=0;
-    await apiUpdate('productos',p.id,{pv:p.pv,pv1:null,pv2:null,pv3:null,pc1:null,pc2:null,pc3:null,cant_inicial:p.cant_inicial,entradas:0,salidas:0});
-  }
-  DB.anioActual=nombre;
-  await saveConfig();
-  document.getElementById('sidebar-anio').textContent=nombre;
-  document.getElementById('nuevo-anio-input').value='';
-  document.getElementById('anio-preview').style.display='none';
-  document.getElementById('btn-confirmar-anio').style.display='none';
-  await loadAll();
-  hideLoading();
-  populateHistAnios();refreshAll();
-  alert(`✓ Año ${nombre} iniciado correctamente.`);
-  showPage('dashboard',document.querySelector('.nav-item'));
-}
-
-// ─── ELIMINAR VENTA / COMPRA ─────────────────────────────────────
-async function deleteVenta(id){
-  const v=DB.ventas.find(x=>x.id===id);
-  if(!confirm(`¿Eliminar venta de "${v.comprador}" (${v.codigo_producto} × ${v.cantidad})?`))return;
-  showLoading('Eliminando...');
-  const p=DB.productos.find(x=>x.codigo.toUpperCase()===v.codigo_producto.toUpperCase());
-  if(p){p.salidas-=v.cantidad;p.stock=p.cant_inicial+p.entradas-p.salidas;await apiUpdate('productos',p.id,{salidas:p.salidas,stock:p.stock});}
-  await apiDelete('ventas',id);
-  DB.ventas=DB.ventas.filter(x=>x.id!==id);
-  hideLoading();
-  refreshAll();
-}
-
-async function deleteCompra(id){
-  const c=DB.compras.find(x=>x.id===id);
-  if(!confirm(`¿Eliminar compra de "${c.proveedor}" (${c.codigo_producto} × ${c.cantidad})?`))return;
-  showLoading('Eliminando...');
-  const p=DB.productos.find(x=>x.codigo.toUpperCase()===c.codigo_producto.toUpperCase());
-  if(p){p.entradas-=c.cantidad;p.stock=p.cant_inicial+p.entradas-p.salidas;await apiUpdate('productos',p.id,{entradas:p.entradas,stock:p.stock});}
-  await apiDelete('compras',id);
-  DB.compras=DB.compras.filter(x=>x.id!==id);
-  hideLoading();refreshAll();
-}
-
-// ─── EDITAR VENTA ────────────────────────────────────────────────
-function editVenta(id){
-  const v=DB.ventas.find(x=>x.id===id);
-  openModal(`
-  <div class="modal-header"><h3>Editar venta</h3><button class="modal-close" onclick="closeModal()">×</button></div>
-  <div class="modal-body">
-    <div class="form-grid">
-      <div class="form-row"><label>Fecha</label><input id="ev-fecha" type="date" value="${v.fecha}"></div>
-      <div class="form-row"><label>Comprobante</label><input id="ev-comp" type="text" value="${v.comprobante||''}"></div>
-    </div>
-    <div class="form-row"><label>Código producto</label><input id="ev-cod" type="text" value="${v.codigo_producto}" oninput="this.value=this.value.toUpperCase()"></div>
-    <div class="form-row"><label>Descripción</label><input id="ev-desc" type="text" value="${v.descripcion}"></div>
-    <div class="form-grid">
-      <div class="form-row"><label>Cantidad</label><input id="ev-cant" type="number" value="${v.cantidad}" min="1"></div>
-      <div class="form-row"><label>Precio unitario (Gs.)</label><input id="ev-precio" type="number" value="${v.precio||''}"></div>
-    </div>
-    <div class="form-row"><label>Comprador/a</label><input id="ev-comprador" type="text" value="${v.comprador}"></div>
-  </div>
-  <div class="modal-actions">
-    <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveEditVenta(${id})"><i class="ti ti-check"></i> Guardar</button>
-  </div>`);
-}
-
-async function saveEditVenta(id){
-  const v=DB.ventas.find(x=>x.id===id);
-  const cantAnterior=v.cantidad;
-  const codAnterior=v.codigo_producto;
-  const nuevaCant=parseInt(document.getElementById('ev-cant').value)||0;
-  const nuevoCod=document.getElementById('ev-cod').value.trim().toUpperCase();
-  showLoading('Guardando...');
-  const pAnterior=DB.productos.find(x=>x.codigo.toUpperCase()===codAnterior.toUpperCase());
-  if(pAnterior){pAnterior.salidas-=cantAnterior;pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;await apiUpdate('productos',pAnterior.id,{salidas:pAnterior.salidas,stock:pAnterior.stock});}
-  const pNuevo=DB.productos.find(x=>x.codigo.toUpperCase()===nuevoCod);
-  if(pNuevo){pNuevo.salidas+=nuevaCant;pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;await apiUpdate('productos',pNuevo.id,{salidas:pNuevo.salidas,stock:pNuevo.stock});}
-  v.fecha=document.getElementById('ev-fecha').value;
-  v.comprobante=document.getElementById('ev-comp').value;
-  v.codigo_producto=nuevoCod;
-  v.descripcion=document.getElementById('ev-desc').value;
-  v.cantidad=nuevaCant;
-  v.precio=parseFloat(document.getElementById('ev-precio').value)||null;
-  v.comprador=document.getElementById('ev-comprador').value;
-  await apiUpdate('ventas',id,{fecha:v.fecha,comprobante:v.comprobante,codigo_producto:v.codigo_producto,descripcion:v.descripcion,cantidad:v.cantidad,precio:v.precio,comprador:v.comprador});
-  hideLoading();
-  closeModal();refreshAll();
-}
-
-// ─── EDITAR COMPRA ────────────────────────────────────────────────
-function editCompra(id){
-  const c=DB.compras.find(x=>x.id===id);
-  openModal(`
-  <div class="modal-header"><h3>Editar compra</h3><button class="modal-close" onclick="closeModal()">×</button></div>
-  <div class="modal-body">
-    <div class="form-grid">
-      <div class="form-row"><label>Fecha</label><input id="ec-fecha" type="date" value="${c.fecha}"></div>
-      <div class="form-row"><label>Proveedor</label><input id="ec-prov" type="text" value="${c.proveedor}"></div>
-    </div>
-    <div class="form-row"><label>Código producto</label><input id="ec-cod" type="text" value="${c.codigo_producto}" oninput="this.value=this.value.toUpperCase()"></div>
-    <div class="form-row"><label>Descripción</label><input id="ec-desc" type="text" value="${c.descripcion}"></div>
-    <div class="form-grid">
-      <div class="form-row"><label>Cantidad</label><input id="ec-cant" type="number" value="${c.cantidad}" min="1"></div>
-      <div class="form-row"><label>Precio compra unit. (Gs.)</label><input id="ec-precio" type="number" value="${c.precio_compra||''}"></div>
-    </div>
-    <div class="form-row"><label>Factura N°</label><input id="ec-factura" type="text" value="${c.factura||''}"></div>
-  </div>
-  <div class="modal-actions">
-    <button class="btn" onclick="closeModal()">Cancelar</button>
-    <button class="btn primary" onclick="saveEditCompra(${id})"><i class="ti ti-check"></i> Guardar</button>
-  </div>`);
-}
-
-async function saveEditCompra(id){
-  const c=DB.compras.find(x=>x.id===id);
-  const cantAnterior=c.cantidad;
-  const codAnterior=c.codigo_producto;
-  const nuevaCant=parseInt(document.getElementById('ec-cant').value)||0;
-  const nuevoCod=document.getElementById('ec-cod').value.trim().toUpperCase();
-  const nuevoPrecio=parseFloat(document.getElementById('ec-precio').value)||0;
-  showLoading('Guardando...');
-  const pAnterior=DB.productos.find(x=>x.codigo.toUpperCase()===codAnterior.toUpperCase());
-  if(pAnterior){pAnterior.entradas-=cantAnterior;pAnterior.stock=pAnterior.cant_inicial+pAnterior.entradas-pAnterior.salidas;await apiUpdate('productos',pAnterior.id,{entradas:pAnterior.entradas,stock:pAnterior.stock});}
-  const pNuevo=DB.productos.find(x=>x.codigo.toUpperCase()===nuevoCod);
-  if(pNuevo){
-    pNuevo.entradas+=nuevaCant;pNuevo.stock=pNuevo.cant_inicial+pNuevo.entradas-pNuevo.salidas;
-    if(nuevoPrecio>0){let lastSlot=0;for(let i=1;i<=DB.pcSlots;i++){if(pNuevo['pc'+i]!=null)lastSlot=i;}if(lastSlot===0){pNuevo.pc1=nuevoPrecio;}else if(nuevoPrecio!==pNuevo['pc'+lastSlot]){const nextSlot=lastSlot+1;if(nextSlot>DB.pcSlots){DB.pcSlots=nextSlot;await saveConfig();buildInvHeader();}pNuevo['pc'+nextSlot]=nuevoPrecio;}}
-    await apiUpdate('productos',pNuevo.id,{entradas:pNuevo.entradas,stock:pNuevo.stock,pc1:pNuevo.pc1,pc2:pNuevo.pc2,pc3:pNuevo.pc3});
-  }
-  c.fecha=document.getElementById('ec-fecha').value;c.proveedor=document.getElementById('ec-prov').value;c.codigo_producto=nuevoCod;c.descripcion=document.getElementById('ec-desc').value;c.cantidad=nuevaCant;c.precio_compra=nuevoPrecio;c.total=nuevoPrecio*nuevaCant;c.factura=document.getElementById('ec-factura').value.trim();
-  await apiUpdate('compras',id,{fecha:c.fecha,proveedor:c.proveedor,codigo_producto:c.codigo_producto,descripcion:c.descripcion,cantidad:c.cantidad,precio_compra:c.precio_compra,total:c.total,factura:c.factura});
-  hideLoading();closeModal();refreshAll();
-}
-
-// ─── IMPORTAR EXCEL ──────────────────────────────────────────────
-let importData = null;
-
+// ─── IMPORTAR EXCEL ───────────────────────────────────────────────
+let importData=null;
 function handleDrop(e){
-  e.preventDefault();
-  document.getElementById('drop-zone').style.borderColor='#ddd';
-  const file=e.dataTransfer.files[0];
-  if(file) handleFileSelect(file);
+  e.preventDefault();document.getElementById('drop-zone').style.borderColor='#ddd';
+  const file=e.dataTransfer.files[0];if(file)handleFileSelect(file);
 }
-
 function handleFileSelect(file){
-  if(!file) return;
+  if(!file)return;
   const reader=new FileReader();
   reader.onload=function(e){
     try{
       const wb=XLSX.read(e.target.result,{type:'array',cellDates:true,raw:true});
-      importData=parseImportFile(wb);
-      showImportPreview();
-    }catch(err){
-      alert('Error leyendo el archivo: '+err.message);
-    }
+      importData=parseImportFile(wb);showImportPreview();
+    }catch(err){alert('Error leyendo el archivo: '+err.message);}
   };
   reader.readAsArrayBuffer(file);
 }
-
 function safeInt(v){if(v==null||v===''||isNaN(v))return 0;return Math.round(Number(v));}
 function safeFloat(v){if(v==null||v===''||isNaN(v))return null;const n=Number(v);return isNaN(n)?null:n;}
 function safeStr(v){if(v==null)return '';return String(v).trim();}
 function safeDate(v){
-  if(v==null||v===''||v===undefined) return null;
-  // JS Date object
-  if(v instanceof Date){
-    if(isNaN(v.getTime())) return null;
-    return v.toISOString().slice(0,10);
-  }
+  if(v==null||v===''||v===undefined)return null;
+  if(v instanceof Date){if(isNaN(v.getTime()))return null;return v.toISOString().slice(0,10);}
   const s=String(v).trim();
-  if(!s||s==='null'||s==='undefined') return null;
-  // ISO: 2026-02-19 or 2026-02-19T00:00:00 or 2026-02-19 00:00:00
+  if(!s||s==='null'||s==='undefined')return null;
   const iso=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
-  // DD/MM/YYYY
+  if(iso)return `${iso[1]}-${iso[2]}-${iso[3]}`;
   const dmy=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if(dmy) return `${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`;
-  // MM/DD/YYYY
-  const mdy=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if(mdy) return `${mdy[3]}-${mdy[1].padStart(2,'0')}-${mdy[2].padStart(2,'0')}`;
-  // Excel serial number
+  if(dmy)return `${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`;
   const n=Number(s);
-  if(!isNaN(n)&&n>40000&&n<60000){
-    const d=new Date(Math.round((n-25569)*86400*1000));
-    if(!isNaN(d.getTime())) return d.toISOString().slice(0,10);
-  }
+  if(!isNaN(n)&&n>40000&&n<60000){const d=new Date(Math.round((n-25569)*86400*1000));if(!isNaN(d.getTime()))return d.toISOString().slice(0,10);}
   return null;
 }
-
 function parseImportFile(wb){
   const result={productos:[],ventas:[],compras:[]};
-
-  // ── Helper: parse a sheet with known column layout ──────────────
-  function parseSheet(ws, layout){
+  function parseSheet(ws,layout){
     const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true,cellDates:true});
-    // Find first data row (skip headers)
     let startRow=layout.headerRow+1;
-
     for(let i=startRow;i<rows.length;i++){
-      const r=rows[i];
-      if(!r) continue;
-
-      // Products
+      const r=rows[i];if(!r)continue;
       if(layout.prod){
         const cod=safeStr(r[layout.prod.cod]).toUpperCase();
         if(cod&&!cod.includes('CODIGO')&&!cod.includes('COD')&&cod.length>0&&!result.productos.find(p=>p.codigo===cod)){
           const desc=safeStr(r[layout.prod.desc]);
           if(desc&&desc!=='-'){
             result.productos.push({
-              codigo: cod,
-              descripcion: desc,
-              categoria: desc.replace(/\s*[Tt]ama[ñn]o\s*\S+\s*$/, '').trim()||desc,
-              talle: (desc.match(/[Tt]ama[ñn]o\s*(\S+)/)||[])[1]||'',
-              pv:  safeFloat(r[layout.prod.pv])  ||null,
-              pv1: safeFloat(r[layout.prod.pv1]) ||null,
+              codigo:cod,descripcion:desc,
+              categoria:desc.replace(/\s*[Tt]ama[ñn]o\s*\S+\s*$/,'').trim()||desc,
+              talle:(desc.match(/[Tt]ama[ñn]o\s*(\S+)/)||[])[1]||'',
+              pv:safeFloat(r[layout.prod.pv])||null,pv1:safeFloat(r[layout.prod.pv1])||null,
               pv2:null,pv3:null,pc1:null,pc2:null,pc3:null,
-              cant_inicial: safeInt(r[layout.prod.ini]),
-              entradas:     safeInt(r[layout.prod.ent]),
-              salidas:      safeInt(r[layout.prod.sal]),
-              stock:        safeInt(r[layout.prod.stk]),
+              cant_inicial:safeInt(r[layout.prod.ini]),entradas:safeInt(r[layout.prod.ent]),
+              salidas:safeInt(r[layout.prod.sal]),stock:safeInt(r[layout.prod.stk]),
             });
           }
         }
       }
-
-      // Ventas
       if(layout.ven){
         const L=layout.ven;
-        const fecha=safeDate(r[L.fecha]);
-        const cod=safeStr(r[L.cod]).toUpperCase();
-        const comprador=safeStr(r[L.comprador]);
-        const cant=safeInt(r[L.cant]);
+        const fecha=safeDate(r[L.fecha]);const cod=safeStr(r[L.cod]).toUpperCase();
+        const comprador=safeStr(r[L.comprador]);const cant=safeInt(r[L.cant]);
         if(fecha&&cod&&comprador&&!['','-','COMPRADOR','NAN'].includes(comprador.toUpperCase())&&cant>0){
-          result.ventas.push({
-            fecha, codigo_producto:cod,
-            descripcion: safeStr(r[L.desc]),
-            cantidad: cant,
-            precio: safeFloat(r[L.precio]),
-            comprador,
-            comprobante: safeStr(r[L.comp]),
-          });
+          result.ventas.push({fecha,codigo_producto:cod,descripcion:safeStr(r[L.desc]),cantidad:cant,precio:safeFloat(r[L.precio]),comprador,comprobante:safeStr(r[L.comp])});
         }
       }
-
-      // Compras
       if(layout.com){
         const L=layout.com;
-        const fecha=safeDate(r[L.fecha]);
-        const cod=safeStr(r[L.cod]).toUpperCase();
-        const cant=safeInt(r[L.cant]);
+        const fecha=safeDate(r[L.fecha]);const cod=safeStr(r[L.cod]).toUpperCase();const cant=safeInt(r[L.cant]);
         if(fecha&&cod&&cant>0){
           const precio=safeFloat(r[L.precio]);
-          result.compras.push({
-            fecha, codigo_producto:cod,
-            descripcion: safeStr(r[L.desc]),
-            cantidad: cant,
-            precio_compra: precio,
-            total: precio!=null?precio*cant:safeFloat(r[L.total]),
-            proveedor: safeStr(r[L.proveedor]),
-            factura: safeStr(r[L.factura]),
-          });
+          result.compras.push({fecha,codigo_producto:cod,descripcion:safeStr(r[L.desc]),cantidad:cant,precio_compra:precio,total:precio!=null?precio*cant:safeFloat(r[L.total]),proveedor:safeStr(r[L.proveedor]),factura:safeStr(r[L.factura]),documento_url:null});
         }
       }
     }
   }
-
-  // ── Sheet: Fecha 150226 — productos + compras ───────────────────
   if(wb.SheetNames.includes('Fecha 150226')){
-    parseSheet(wb.Sheets['Fecha 150226'],{
-      headerRow:5,
-      prod:{ cod:0,desc:1,pv:2,pv1:3,ini:4,ent:5,sal:6,stk:7 },
-      ven: null,
-      com: { fecha:20,cod:21,desc:22,cant:23,precio:24,total:25,proveedor:27,factura:19 },
-    });
+    parseSheet(wb.Sheets['Fecha 150226'],{headerRow:5,prod:{cod:0,desc:1,pv:2,pv1:3,ini:4,ent:5,sal:6,stk:7},ven:null,com:{fecha:20,cod:21,desc:22,cant:23,precio:24,total:25,proveedor:27,factura:19}});
   }
-
-  // ── Sheet: Fecha 30.01.25 — productos + ventas + compras ────────
   if(wb.SheetNames.includes('Fecha 30.01.25')){
-    parseSheet(wb.Sheets['Fecha 30.01.25'],{
-      headerRow:6,
-      prod:{ cod:0,desc:1,pv:2,pv1:null,ini:3,ent:4,sal:5,stk:6 },
-      ven: { fecha:8,cod:9,desc:10,cant:11,precio:12,comprador:13,comp:14 },
-      com: { fecha:17,cod:18,desc:19,cant:20,precio:21,total:22,proveedor:24,factura:16 },
-    });
+    parseSheet(wb.Sheets['Fecha 30.01.25'],{headerRow:6,prod:{cod:0,desc:1,pv:2,pv1:null,ini:3,ent:4,sal:5,stk:6},ven:{fecha:8,cod:9,desc:10,cant:11,precio:12,comprador:13,comp:14},com:{fecha:17,cod:18,desc:19,cant:20,precio:21,total:22,proveedor:24,factura:16}});
   }
-
-  // ── Any other Fecha* sheets — try to detect layout ─────────────
-  wb.SheetNames.filter(n=>n.startsWith('Fecha')&&n!=='Fecha 150226'&&n!=='Fecha 30.01.25').forEach(name=>{
-    const ws=wb.Sheets[name];
-    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true,cellDates:true});
-    let hdrRow=-1;
-    for(let i=0;i<Math.min(10,rows.length);i++){
-      if(rows[i]&&rows[i].some(c=>safeStr(c).toLowerCase().includes('codigo de prod'))){hdrRow=i;break;}
-    }
-    if(hdrRow<0) return;
-    const hdr=rows[hdrRow].map(c=>safeStr(c).toLowerCase());
-    const ci=hdr.findIndex(h=>h.includes('cant. ini'));
-    const pv=hdr.findIndex(h=>h.includes('precio de venta'));
-    const ven_f=hdr.findIndex((h,i)=>h==='fecha'&&i>7);
-    const com_f=hdr.findIndex((h,i)=>h.includes('fecha')&&i>ven_f+1);
-    parseSheet(ws,{
-      headerRow:hdrRow,
-      prod:{ cod:0,desc:1,pv,pv1:pv+1<ven_f?pv+1:null,ini:ci,ent:ci+1,sal:ci+2,stk:ci+3 },
-      ven: ven_f>=0?{ fecha:ven_f,cod:ven_f+1,desc:ven_f+2,cant:ven_f+3,precio:ven_f+4,comprador:ven_f+6,comp:ven_f+7 }:null,
-      com: com_f>=0?{ fecha:com_f,cod:com_f+1,desc:com_f+2,cant:com_f+3,precio:com_f+4,total:com_f+5,proveedor:com_f+7,factura:ven_f+6 }:null,
-    });
-  });
-
   return result;
 }
-
 function showImportPreview(){
-  if(!importData) return;
+  if(!importData)return;
   document.getElementById('import-preview').style.display='block';
   document.getElementById('import-result').style.display='none';
-  const {productos,ventas,compras}=importData;
+  const{productos,ventas,compras}=importData;
   document.getElementById('import-summary').innerHTML=
     `📦 <strong>${productos.length}</strong> productos encontrados<br>`+
     `🛒 <strong>${ventas.length}</strong> registros de ventas<br>`+
     `🚚 <strong>${compras.length}</strong> registros de compras`;
 }
-
 function resetImport(){
-  importData=null;
-  document.getElementById('file-input').value='';
+  importData=null;document.getElementById('file-input').value='';
   document.getElementById('import-preview').style.display='none';
   document.getElementById('import-result').style.display='none';
 }
-
 async function doImport(){
-  if(!importData) return;
-  const {productos,ventas,compras}=importData;
+  if(!importData)return;
+  const{productos,ventas,compras}=importData;
   document.getElementById('btn-do-import').disabled=true;
   showLoading('Importando productos...');
-
   try{
-    // Upsert products by codigo
     for(const p of productos){
       const existing=DB.productos.find(x=>x.codigo===p.codigo);
-      if(existing){
-        await apiUpdate('productos',existing.id,p);
-        Object.assign(existing,p);
-      } else {
-        const saved=await apiInsert('productos',p);
-        if(saved) DB.productos.push(saved);
-      }
+      if(existing){await apiUpdate('productos',existing.id,p);Object.assign(existing,p);}
+      else{const saved=await apiInsert('productos',p);if(saved)DB.productos.push(saved);}
     }
-
     showLoading('Importando ventas...');
-    if(ventas.length>0){
-      const {data:savedVentas,error:ve}=await supa.from('ventas').insert(ventas).select();
-      if(!ve&&savedVentas) DB.ventas.push(...savedVentas);
-    }
-
+    if(ventas.length>0){const{data:sv,error:ve}=await supa.from('ventas').insert(ventas).select();if(!ve&&sv)DB.ventas.push(...sv);}
     showLoading('Importando compras...');
-    if(compras.length>0){
-      const {data:savedCompras,error:ce}=await supa.from('compras').insert(compras).select();
-      if(!ce&&savedCompras) DB.compras.push(...savedCompras);
-    }
-
+    if(compras.length>0){const{data:sc,error:ce}=await supa.from('compras').insert(compras).select();if(!ce&&sc)DB.compras.push(...sc);}
     hideLoading();
     document.getElementById('import-result').style.display='block';
-    document.getElementById('import-result').innerHTML=
-      `<div style="background:#E1F5EE;border:1px solid #a0dfc8;border-radius:8px;padding:12px 16px;font-size:13px;color:#085041">
-        ✓ Importación completada: <strong>${productos.length}</strong> productos · <strong>${ventas.length}</strong> ventas · <strong>${compras.length}</strong> compras
-      </div>`;
+    document.getElementById('import-result').innerHTML=`<div style="background:#E1F5EE;border:1px solid #a0dfc8;border-radius:8px;padding:12px 16px;font-size:13px;color:#085041">✓ Importación completada: <strong>${productos.length}</strong> productos · <strong>${ventas.length}</strong> ventas · <strong>${compras.length}</strong> compras</div>`;
     document.getElementById('import-preview').style.display='none';
-    importData=null;
-    invFiltered=[...DB.productos];venFiltered=[...DB.ventas];comFiltered=[...DB.compras];
+    importData=null;invFiltered=[...DB.productos];venFiltered=[...DB.ventas];comFiltered=[...DB.compras];
     refreshAll();
-  } catch(err){
-    hideLoading();
-    alert('Error durante la importación: '+err.message);
-  }
+  }catch(err){hideLoading();alert('Error durante la importación: '+err.message);}
   document.getElementById('btn-do-import').disabled=false;
 }
 
-// ─── ELIMINAR PRODUCTO ───────────────────────────────────────────
+// ─── ELIMINAR PRODUCTO ────────────────────────────────────────────
 async function deleteProducto(id){
   const p=DB.productos.find(x=>x.id===id);
-  if(p.stock>0){
-    if(!confirm(`"${p.descripcion}" tiene ${p.stock} unidades en stock.\n¿Eliminar de todas formas?`))return;
-  } else {
-    if(!confirm(`¿Eliminar "${p.descripcion}"?`))return;
-  }
+  if(p.stock>0){if(!confirm(`"${p.descripcion}" tiene ${p.stock} unidades en stock.\n¿Eliminar de todas formas?`))return;}
+  else{if(!confirm(`¿Eliminar "${p.descripcion}"?`))return;}
   showLoading('Eliminando...');
   await apiDelete('productos',id);
   DB.productos=DB.productos.filter(x=>x.id!==id);
   invFiltered=invFiltered.filter(x=>x.id!==id);
-  hideLoading();
-  refreshAll();
+  hideLoading();refreshAll();
 }
 
-// ─── REFRESH ────────────────────────────────────────────────────
+// ─── REFRESH ──────────────────────────────────────────────────────
 function refreshAll(){
   calcMetrics();renderAlertas();
   invFiltered=[...DB.productos];filterInventario();
@@ -1571,9 +1532,8 @@ function refreshAll(){
   renderReportes();populateCatFilter();
 }
 
-// ─── INIT ────────────────────────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────────
 document.getElementById('hoy-label').textContent='Hoy: '+todayDisplay();
-// Load data from Supabase then init UI
 loadAll().then(()=>{
   invFiltered=[...DB.productos];venFiltered=[...DB.ventas];comFiltered=[...DB.compras];
   populateCatFilter();calcMetrics();renderAlertas();
