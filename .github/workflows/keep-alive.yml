@@ -2,16 +2,35 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: '0 10 */3 * *'  # cada 3 días a las 10am UTC
-  workflow_dispatch:         # permite correrlo manualmente también
+    - cron: '0 12 */3 * *'
+  workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Ping Supabase
         run: |
-          curl -s -o /dev/null -w "%{http_code}" \
-            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVremZ6ZnB5d3BpdXF5b3h3ZmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExOTUyMTgsImV4cCI6MjA5Njc3MTIxOH0.f3wUbLAsYA5sHG-G3KZ77E4GggpFGm1gaVYNatcWS0o" \
-            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVremZ6ZnB5d3BpdXF5b3h3ZmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExOTUyMTgsImV4cCI6MjA5Njc3MTIxOH0.f3wUbLAsYA5sHG-G3KZ77E4GggpFGm1gaVYNatcWS0o" \
-            "https://ekzfzfpywpiuqyoxwfkp.supabase.co/rest/v1/productos?select=id&limit=1"
+          curl -f -s \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sYnBqYmhldWdmcWJmZnh1dGFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNTgwMzksImV4cCI6MjA5NTkzNDAzOX0.vFoIEfOctQV8VkWH7aJU9YbDaU7GrgFSG9c0IpL7H1c" \
+            "https://mlbpjbheugfqbffxutaf.supabase.co/rest/v1/libros?select=id&limit=1" \
+            && echo "✅ Supabase is alive" \
+            || echo "⚠️ Supabase ping failed but continuing"
+        continue-on-error: true
+
+      - name: Update keep-alive timestamp
+        run: |
+          echo "Last ping: $(date -u)" > ping-log.txt
+
+      - name: Commit to keep repo active
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ping-log.txt
+          git diff --staged --quiet || git commit -m "chore: keep-alive $(date -u +%Y-%m-%d)"
+          git push
