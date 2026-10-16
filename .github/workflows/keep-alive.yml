@@ -2,8 +2,11 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: '0 12 */3 * *'
+    - cron: '0 12 * * *'   # every day at 12:00 UTC
   workflow_dispatch:
+
+env:
+  TABLE: ventas   # table in the uniformes aldea project
 
 jobs:
   ping:
@@ -15,19 +18,39 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Ping Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          curl -f -s \
-            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sYnBqYmhldWdmcWJmZnh1dGFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNTgwMzksImV4cCI6MjA5NTkzNDAzOX0.vFoIEfOctQV8VkWH7aJU9YbDaU7GrgFSG9c0IpL7H1c" \
-            "https://mlbpjbheugfqbffxutaf.supabase.co/rest/v1/libros?select=id&limit=1" \
-            && echo "✅ Supabase is alive" \
-            || echo "⚠️ Supabase ping failed but continuing"
-        continue-on-error: true
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Add the SUPABASE_URL and SUPABASE_ANON_KEY repository secrets."
+            exit 1
+          fi
+          if [ "$TABLE" = "your_table_name" ]; then
+            echo "::error::Set TABLE at the top of this workflow to one of your tables."
+            exit 1
+          fi
+
+          status=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
+            "${SUPABASE_URL%/}/rest/v1/${TABLE}?select=*&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY") || status="000"
+
+          if [ "$status" = "200" ]; then
+            echo "✅ uniformes aldea is alive (HTTP $status)"
+          else
+            echo "::error::Ping failed (HTTP $status)"
+            cat /tmp/resp.json 2>/dev/null || true
+            exit 1
+          fi
 
       - name: Update keep-alive timestamp
+        if: always()
         run: |
           echo "Last ping: $(date -u)" > ping-log.txt
 
       - name: Commit to keep repo active
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
