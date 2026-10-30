@@ -26,22 +26,22 @@ jobs:
 
           for attempt in 1 2 3 4 5; do
             status=$(curl -sS --max-time 20 -o /tmp/resp.json -w "%{http_code}" \
-              -X POST "${SUPABASE_URL%/}/rest/v1/keepalive?on_conflict=id" \
+              -X PATCH "${SUPABASE_URL%/}/rest/v1/keepalive?id=eq.1" \
               -H "apikey: $SUPABASE_ANON_KEY" \
               -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
               -H "Content-Type: application/json" \
-              -H "Prefer: resolution=merge-duplicates" \
-              -d "{\"id\":1,\"last_ping\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}") || status="000"
+              -H "Prefer: return=representation" \
+              -d "{\"last_ping\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}") || status="000"
             echo "Intento $attempt: HTTP $status"
-            if [ "$status" = "200" ] || [ "$status" = "201" ] || [ "$status" = "204" ]; then
-              echo "✅ uniformes aldea está activo"
+            echo "Respuesta: $(cat /tmp/resp.json 2>/dev/null)"
+            if [ "$status" = "200" ] && grep -q '"id"' /tmp/resp.json; then
+              echo "✅ uniformes aldea está activo (fila actualizada)"
               exit 0
             fi
             sleep 20
           done
 
           echo "::error::Ping falló después de 5 intentos (HTTP $status)"
-          cat /tmp/resp.json 2>/dev/null || true
           exit 1
 
       - name: Update keep-alive timestamp
