@@ -2,11 +2,8 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: '0 12 * * *'   # every day at 12:00 UTC
+    - cron: '0 12 * * *'   # todos los días a las 12:00 UTC
   workflow_dispatch:
-
-env:
-  TABLE: ventas   # table in the uniformes aldea project
 
 jobs:
   ping:
@@ -17,32 +14,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ping Supabase
+      - name: Ping Supabase (write)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::Add the SUPABASE_URL and SUPABASE_ANON_KEY repository secrets."
-            exit 1
-          fi
-          if [ "$TABLE" = "your_table_name" ]; then
-            echo "::error::Set TABLE at the top of this workflow to one of your tables."
+            echo "::error::Faltan los secrets SUPABASE_URL y SUPABASE_ANON_KEY."
             exit 1
           fi
 
-          status=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
-            "${SUPABASE_URL%/}/rest/v1/${TABLE}?select=*&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY") || status="000"
+          for attempt in 1 2 3 4 5; do
+            status=$(curl -sS --max-time 20 -o /tmp/resp.json -w "%{http_code}" \
+              -X POST "${SUPABASE_URL%/}/rest/v1/keepalive?on_conflict=id" \
+              -H "apikey: $SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+              -H "Content-Type: application/json" \
+              -H "Prefer: resolution=merge-duplicates" \
+              -d "{\"id\":1,\"last_ping\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}") || status="000"
+            echo "Intento $attempt: HTTP $status"
+            if [ "$status" = "200" ] || [ "$status" = "201" ] || [ "$status" = "204" ]; then
+              echo "✅ uniformes aldea está activo"
+              exit 0
+            fi
+            sleep 20
+          done
 
-          if [ "$status" = "200" ]; then
-            echo "✅ uniformes aldea is alive (HTTP $status)"
-          else
-            echo "::error::Ping failed (HTTP $status)"
-            cat /tmp/resp.json 2>/dev/null || true
-            exit 1
-          fi
+          echo "::error::Ping falló después de 5 intentos (HTTP $status)"
+          cat /tmp/resp.json 2>/dev/null || true
+          exit 1
 
       - name: Update keep-alive timestamp
         if: always()
