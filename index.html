@@ -123,6 +123,7 @@ code{background:#f0f0ec;padding:2px 6px;border-radius:4px;font-family:monospace;
   <button class="nav-item" onclick="showPage('historial',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg> Historial</button>
   <button class="nav-item" onclick="showPage('anio',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg> Nuevo año</button>
   <button class="nav-item" onclick="showPage('importar',this)"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="12"/><line x1="15" y1="15" x2="12" y2="12"/></svg> Importar Excel</button>
+  <button class="nav-item" onclick="exportTodoExcel()" title="Descargar todos los datos en un archivo Excel"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar todo a Excel</button>
 </nav>
 
 <main class="main">
@@ -1344,6 +1345,75 @@ async function confirmarNuevoAnio(){
   populateHistAnios();refreshAll();
   alert(`✓ Año ${nombre} iniciado correctamente.`);
   showPage('dashboard',document.querySelector('.nav-item'));
+}
+
+// ─── EXPORTAR TODO A EXCEL ────────────────────────────────────────
+function exportTodoExcel(){
+  if(typeof XLSX==='undefined'){alert('No se pudo cargar la librería de Excel. Verificá tu conexión e intentá de nuevo.');return;}
+  const wb=XLSX.utils.book_new();
+  const addSheet=(name,rows,widths)=>{
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    if(widths)ws['!cols']=widths.map(w=>({wch:w}));
+    XLSX.utils.book_append_sheet(wb,ws,name);
+  };
+  const num=v=>(v===null||v===undefined||v==='')?'':Number(v);
+
+  // Resumen
+  const totalCompras=DB.compras.reduce((a,c)=>a+(c.total||0),0);
+  const totalVentas=DB.ventas.reduce((a,v)=>a+(v.precio||0)*v.cantidad,0);
+  addSheet('Resumen',[
+    ['Inventario Uniformes'],
+    ['Año actual',DB.anioActual],
+    ['Fecha de exportación',todayDisplay()],
+    [],
+    ['Total productos',DB.productos.length],
+    ['Unidades en stock',DB.productos.reduce((a,p)=>a+p.stock,0)],
+    ['Productos sin stock',DB.productos.filter(p=>p.stock===0).length],
+    ['Productos con stock bajo (1-5)',DB.productos.filter(p=>p.stock>0&&p.stock<=5).length],
+    ['Registros de ventas',DB.ventas.length],
+    ['Total ventas (Gs.)',totalVentas],
+    ['Registros de compras',DB.compras.length],
+    ['Total compras (Gs.)',totalCompras],
+    ['Registros en historial',DB.historial.length],
+  ],[32,22]);
+
+  // Productos
+  const maxSlots=Math.max(DB.pcSlots,DB.pvSlots);
+  const pHead=['Código','Descripción','Categoría','Talle','PV'];
+  for(let i=1;i<=maxSlots;i++){pHead.push('PC'+i,'PV'+i);}
+  pHead.push('Inicial','Entradas','Salidas','Stock','Estado');
+  const pRows=DB.productos.map(p=>{
+    const r=[p.codigo,p.descripcion,p.categoria,p.talle||'',num(p.pv)];
+    for(let i=1;i<=maxSlots;i++){r.push(num(p['pc'+i]),num(p['pv'+i]));}
+    r.push(p.cant_inicial,p.entradas,p.salidas,p.stock,p.stock===0?'Sin stock':p.stock<=5?'Stock bajo':'OK');
+    return r;
+  });
+  addSheet('Productos',[pHead,...pRows],[12,38,26,8,12,...Array(maxSlots*2).fill(11),9,9,9,9,12]);
+
+  // Ventas
+  addSheet('Ventas',[
+    ['Fecha','Código','Descripción','Comprador/a','Cantidad','Precio unit.','Total','Comprobante'],
+    ...DB.ventas.map(v=>[v.fecha,v.codigo_producto,v.descripcion,v.comprador,v.cantidad,num(v.precio),(v.precio||0)*v.cantidad,v.comprobante||''])
+  ],[12,12,38,26,10,13,14,16]);
+
+  // Compras
+  addSheet('Compras',[
+    ['Fecha','Código','Descripción','Proveedor','Cantidad','Precio compra','Total','Factura N°','Documento (link)'],
+    ...DB.compras.map(c=>[c.fecha,c.codigo_producto,c.descripcion,c.proveedor,c.cantidad,num(c.precio_compra),num(c.total),c.factura||'',c.documento_url||''])
+  ],[12,12,38,22,10,14,14,14,50]);
+
+  // Historial (años anteriores)
+  addSheet('Historial',[
+    ['Año','Tipo','Fecha','Código','Descripción','Comprador/Proveedor','Cantidad','Precio unit.','Total','Comprobante/Factura','Documento (link)'],
+    ...DB.historial.map(h=>{
+      const esVenta=h.tipo==='venta';
+      const precio=esVenta?h.precio:h.precio_compra;
+      const total=esVenta?(h.precio||0)*h.cantidad:h.total;
+      return [h.anio,esVenta?'Venta':'Compra',h.fecha,h.codigo_producto,h.descripcion,esVenta?(h.comprador||''):(h.proveedor||''),h.cantidad,num(precio),num(total),esVenta?(h.comprobante||''):(h.factura||''),h.documento_url||''];
+    })
+  ],[8,10,12,12,38,26,10,13,14,18,50]);
+
+  XLSX.writeFile(wb,`uniformes_completo_${DB.anioActual}_${todayISO()}.xlsx`);
 }
 
 // ─── EXPORTAR EXCEL ───────────────────────────────────────────────
